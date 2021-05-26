@@ -20,7 +20,7 @@ Why I planned this project:
 현재 서비스중인 응답가능한 기능 리스트입니다.. <br>
 
   + 날씨 응답
- <img src="https://user-images.githubusercontent.com/11024746/119628020-b004eb80-be47-11eb-8995-ab3d3f0027fd.png" width=30% height=30%)
+ <img src="https://user-images.githubusercontent.com/11024746/119628020-b004eb80-be47-11eb-8995-ab3d3f0027fd.png" width=30% height=30%>
 
   + text animator (제작함)
   + Linear layout
