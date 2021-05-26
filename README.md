@@ -3,8 +3,7 @@ Project Description: <br>
 
 현재 카카오 채널 "1319"에서 만나보실 수 있습니다! <br><br>
 
-<br>
-시작 21/04/28 - 진행중 <br>
+시작: 21/04/28 - 진행중 <br>
 공동 작업: Park Hee Gyeoung
 
 1319 챗봇은 정보전달(날씨, 음악차트등..) 정보 전달을 목적으로 하는 닫힌 대화 챗봇(close domain chatbot) 입니다.
@@ -21,7 +20,7 @@ Why I planned this project:
 현재 서비스중인 응답가능한 기능 리스트입니다.. <br>
 
   + 날씨 응답
- ![image](https://user-images.githubusercontent.com/11024746/119628020-b004eb80-be47-11eb-8995-ab3d3f0027fd.png)
+ <img src="https://user-images.githubusercontent.com/11024746/119628020-b004eb80-be47-11eb-8995-ab3d3f0027fd.png" width=30% height=30%)
 
   + text animator (제작함)
   + Linear layout
