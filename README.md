@@ -17,23 +17,19 @@ Why I planned this project:
 + 나만의 자비스..
 
 ## 응답 가능 대화(기능)
-현재 서비스중인 응답가능한 기능 리스트입니다.. <br>
+현재 서비스중인 응답가능한 기능 리스트입니다. <br>
 
   + 날씨 응답
- <img src="https://user-images.githubusercontent.com/11024746/119628020-b004eb80-be47-11eb-8995-ab3d3f0027fd.png" width=30% height=30%>
-
-  + text animator (제작함)
-  + Linear layout
+ <img src="https://user-images.githubusercontent.com/11024746/119628020-b004eb80-be47-11eb-8995-ab3d3f0027fd.png" width=20% height=20%>
+ <img src="https://user-images.githubusercontent.com/11024746/119628833-6bc61b00-be48-11eb-9b56-0b9274d901e5.png" width=20% height=20%>
+ 지역, 날짜 선택 가능
+  + 코로나 확진자수
+ <img src="https://user-images.githubusercontent.com/11024746/119629128-afb92000-be48-11eb-97ee-8e3db46d2bea.png" width=20% height=20%>
+  + 음악 차트
+  <img src="https://user-images.githubusercontent.com/11024746/119629320-e131eb80-be48-11eb-8163-9547bf8168cf.png" width=20% height=20%>
+  + 영화 순위(예매율 기준)
+  <img src="https://user-images.githubusercontent.com/11024746/119629703-3a018400-be49-11eb-90f5-49a570685fa6.png" width=20% height=20%>
   
-1stage <br>
-  + background Img
-  + Img button
-  + intent
-  
-2stage <br>
-  + pop up message
-  + toast message
-  + absolute layout
 
 ## 개발 환경
 Development environment: <br>
