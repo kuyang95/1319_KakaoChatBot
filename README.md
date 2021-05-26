@@ -25,18 +25,18 @@ Why I planned this project:
  
   + 코로나 확진자수
  <img src="https://user-images.githubusercontent.com/11024746/119629128-afb92000-be48-11eb-97ee-8e3db46d2bea.png" width=20% height=20%>
+ 
   + 음악 차트
   <img src="https://user-images.githubusercontent.com/11024746/119629320-e131eb80-be48-11eb-8163-9547bf8168cf.png" width=20% height=20%>
+  
   + 영화 순위(예매율 기준)
   <img src="https://user-images.githubusercontent.com/11024746/119629703-3a018400-be49-11eb-90f5-49a570685fa6.png" width=20% height=20%>
   
 
 ## 개발 환경
-Development environment: <br>
+Development Environment: <br>
 
-+ 하드웨어 - AVD Player (Api: 24)
-+ 언어 - java, xml
-+ 캡처
-
-<img width="339" alt="스크린샷 2020-09-22 오전 10 36 21" src="https://user-images.githubusercontent.com/11024746/93837139-08d02300-fcc0-11ea-8f1e-3eb71b2da333.png">
-<img width="333" alt="스크린샷 2020-09-22 오전 10 37 28" src="https://user-images.githubusercontent.com/11024746/93837150-108fc780-fcc0-11ea-9fa6-053e559a2033.png">
++ 서비스 플랫폼 - Kakao Channel
++ 언어 - python 3.8
++ 웹서버 프레임워크 - Flask
++ 서버 구동 - Rasberrypi 3B+
