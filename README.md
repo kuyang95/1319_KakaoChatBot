@@ -4,7 +4,7 @@ Project Description: <br>
 현재 카카오 채널 "1319"에서 서비스를 만나보실 수 있습니다! <br><br>
 
 시작: 21/04/28 - 진행중 <br>
-공동 작업: Park Hee Gyeoung
+공동 작업: Park Hee Gyeoung https://github.com/bintan26
 
 1319 챗봇은 정보전달(날씨, 음악차트등..) 정보 전달을 목적으로 하는 닫힌 대화 챗봇(close domain chatbot) 입니다.
 
