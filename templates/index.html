@@ -1,0 +1,45 @@
+<!DOCTYPE h=tml>
+<html lang="ko">
+    <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <title>
+        PangmoWeb
+    </title>
+</head>
+<body>
+    <p><a href = "{{url_for('index')}}"><img class="logo" src='../static/official_myLogo.png'  ></a></p>
+    <div class="container">
+        <div class="input-conrainer">
+            <form action = "{{request.path}}" method="POST">
+            <input id="input" name = 'writer' placeholder="작성자"/>
+            <input id="input" name = 'text' placeholder="내용"/>
+            <button id="add-button" type="submit">추가</button>
+        </form>
+        </div>
+        {% for message in get_flashed_messages() %}
+        <br>{{message}}
+        {%endfor%}
+        <div class="list-container">
+            <h1>방명록</h1>
+            
+            <ul id="list">
+                <table class="type04">
+                  
+                {% for i in guestBooks[::-1] %}
+                    <tr>
+                      <th scope="row">{{i.writer}}</th>
+                      <td>{{i.input_text}}</td>
+                    </tr>      
+                    {%endfor%}
+                  </table>
+            </ul>
+        </div>
+    </div>
+    <div class="like-content">
+        <span>
+        </span>
+      </div>
+</body>
+    </html>
