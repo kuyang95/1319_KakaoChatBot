@@ -217,7 +217,7 @@ def shop_equipment(reqData):
                     "description": "강화를 통해 성장할 수 있는 검이다",
                     "profile": {
                         "title": "검",
-                        "imageUrl": "http://210.111.183.149:1234/static/sword_profile.png"
+                        "imageUrl": "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
 			 
                     },
                     "itemList": [
@@ -244,7 +244,7 @@ def shop_equipment(reqData):
                     "description": "준비중..",
                     "profile": {
                         "title": "준비중..",
-                        "imageUrl": "http://210.111.183.149:1234/static/sword_profile.png"
+                        "imageUrl": "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
 			 
                     },
                     "itemList": [

@@ -26,7 +26,7 @@ class User(db.Model):
 	inventories = db.relationship("Inventory", backref='user')
 	
 	def __repr__(self):
-		return '<User %r>' % self.userid
+		return '<User %r>' % self.id
 		
 	def __init__(self, userid, password):
 		self.userid = userid
@@ -42,6 +42,8 @@ class ItemBook(db.Model):
 	spec = db.Column(db.String(100), nullable=True)
 	buyPrice = db.Column(db.Integer, nullable=True, default = 0)
 	sellPrice = db.Column(db.Integer, nullable=False)
+	itemImg = db.Column(db.String(200), nullable=True, default="http://210.111.183.149:1234/static/1319default.png")
+	
 	children = db.relationship("Inventory", backref="item_book")
 
 	def __repr__(self):
@@ -63,6 +65,7 @@ class Inventory(db.Model):
 	quantity = db.Column(db.Integer, nullable=False, default=1)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	itemNo = db.Column(db.Integer, db.ForeignKey('item_book.id'))
+	
 
 	def __repr__(self):
 		return '<Inventory %r>' % self.id

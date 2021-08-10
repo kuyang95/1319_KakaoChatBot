@@ -28,7 +28,7 @@ def signIn(reqData):
             "outputs": [
             {
             "simpleText": {
-                "text": "\"" + userProfile.userid + "\"" + "님의 마이페이지 🔓"
+                "text": "\"" + userProfile.userid + "\"" + "님의 마이페이지 🔓\n[칭호 없음]"
             } 
             }
             ],
@@ -48,12 +48,11 @@ def signIn(reqData):
             "action": "block",
             "blockId": "6109219c25cb590ace33a6cf"
             },
-            {
-            "label": "show me the money 💰",
-            "action": "block",
-            "blockId": "610caea93dcccc79addb2654"
-            },
-            
+             {
+				            "label": "돈벌기 💰",
+				            "action": "block",
+				            "blockId": "610caea93dcccc79addb2654"
+				            },
             
             ]
             }

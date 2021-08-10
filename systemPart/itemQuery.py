@@ -65,3 +65,19 @@ def changeAGold(pickItem, uid, quantity):
 	models.db.session.commit()
 	
 	return True
+	
+def addA(pickItem, uid, quantity):
+	quantity = int(quantity)
+	pickItem_info = models.ItemBook.query.filter_by(itemName = pickItem).first()
+	pickItem = models.Inventory.query.filter(models.Inventory.user_id==uid, models.Inventory.name==pickItem).first()
+	userProfile = models.User.query.filter_by(id = uid).first()
+	
+	if pickItem is None:
+		models.db.session.add(models.Inventory(pickItem_info.itemName, userProfile.id, pickItem_info.id))
+		
+	else:
+		pickItem.quantity += quantity
+	
+	
+	models.db.session.commit()
+	return True

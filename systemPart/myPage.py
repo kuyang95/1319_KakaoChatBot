@@ -25,7 +25,7 @@ def myPage(reqData):
 		        "outputs": [
 		            {
 		                "simpleText": {
-		                    "text": "\"" + userProfile.userid + "\"" + "님의 마이페이지 🔓"
+		                    "text": "\"" + userProfile.userid + "\"" + "님의 마이페이지 🔓\n[칭호 없음]"
 		                } 
 		            }
 		        ],

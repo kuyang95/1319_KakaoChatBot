@@ -141,7 +141,7 @@ def beefUp(reqData): # 강화
 		  },
 		  "profile": {
 		      "title": str(user_sword.name),
-		      "imageUrl": "http://210.111.183.149:1234/static/sword_profile.png"
+		      "imageUrl": "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
 		       
 		  },
 		  "itemList": [
@@ -241,7 +241,7 @@ def beefUp_try(reqData):
                     },
                     "profile": {
                         "title": str(sucSword.itemName),
-                        "imageUrl": "http://210.111.183.149:1234/static/sword_profile.png"
+                        "imageUrl": "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
 			 
                     },
                     "itemList": [
@@ -282,10 +282,15 @@ def beefUp_try(reqData):
     else:
       if user_sword.quantity == 1:
 	      models.db.session.delete(user_sword)
-	      models.db.session.commit()
+	      
       else:
 	      user_sword.quantity -= 1
+      
+      if beeGrade == 0:
+	      itemQuery.addA("저주받은 검", userProfile.id, 1)
 	
+      models.db.session.commit()
+
       res = {
     "version": "2.0",
      "context": {

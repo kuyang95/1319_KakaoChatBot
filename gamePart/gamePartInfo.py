@@ -18,7 +18,7 @@ def gamePartInfo():
                 {
                   "action": "block",
                   "label": "이동",
-                  "blockId": "60e6cd1a7d19482b2b9e794b"
+                  "blockId": "610e9a6fee2e484fe68ac25a"
                 },
               ],
             },

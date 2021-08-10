@@ -43,10 +43,17 @@ def inventory(reqData):
 	}
 
 	else:
-		
-		for inven in user_inven:
+		answer += "장비 🛡\n——————————————\n"
+		user_equipment = models.db.session.query(models.Inventory,models.ItemBook).filter(models.ItemBook.id == models.Inventory.itemNo, models.ItemBook.category=='장비', models.Inventory.user_id ==userProfile.id).order_by(models.Inventory.name).all()
+		for inven, itembook in user_equipment:
 			answer += "- " + inven.name + "   " + str(inven.quantity) + "\n"
-
+		
+		answer += "\n재료 🪄\n——————————————\n"
+		user_ingredient = models.db.session.query(models.Inventory, models.ItemBook).filter(models.Inventory.itemNo==models.ItemBook.id, models.Inventory.user_id==userProfile.id, models.ItemBook.category=='재료').order_by(models.Inventory.name).all()
+		
+		for inven, itembook in user_ingredient:
+			answer += "- " + inven.name + "   " + str(inven.quantity) + "\n"
+		
 		res = {
     "version": "2.0",
     "context": {
@@ -161,10 +168,14 @@ def viewItemDescript(reqData):
 			    "description": pickItem.descript,
 			    "profile": {
 				"title": item_name,
-				"imageUrl": "http://210.111.183.149:1234/static/sword_profile.png"
+				"imageUrl": pickItem.itemImg
 				 
 			    },
 			    "itemList": [
+			    {
+				    "title": "분류",
+				    "description": pickItem.category
+				},
 				{
 				    "title": "스펙",
 				    "description": pickItem.spec
@@ -223,7 +234,7 @@ def sellItem(reqData):
 	],
 	"quickReplies": [
 	  {
-	"blockId": "610fc056a5a4854bcb94d908",
+	"blockId": "610e4299defb4e3121f2eb62",
 	"action": "block",
 	"label": "다시입력 ✏️"
 	},
@@ -232,11 +243,13 @@ def sellItem(reqData):
 	}
 	}
 	
+	
+		
 	for itemPuzzle in req[:-1]:
 		pickItem += itemPuzzle
-	
-	pickItem = pickItem[:-1]
-	
+		
+	pickItem = pickItem[:-len(str(quantity))]
+		
 	userItem = models.Inventory.query.filter(models.Inventory.user_id==userProfile.id, models.Inventory.name==pickItem).first()
 	
 	if userItem is None or userItem.quantity < quantity:
@@ -257,7 +270,7 @@ def sellItem(reqData):
 	],
 	"quickReplies": [
 	  {
-	"blockId": "610fc056a5a4854bcb94d908",
+	"blockId": "610e4299defb4e3121f2eb62",
 	"action": "block",
 	"label": "다시입력 ✏️"
 	},

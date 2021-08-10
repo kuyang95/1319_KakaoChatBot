@@ -33,6 +33,7 @@ from systemPart import sellItem
 # 게임
 from gamePart import gamePartInfo
 from gamePart import beefUp
+from gamePart import mine
 
 from minzy import minzy
 
@@ -180,6 +181,11 @@ def call_beefUp_try():
       res = beefUp.beefUp_try(request.get_json())
       return jsonify(res)
 
+@app.route('/mine', methods=['POST']) # 채굴
+def call_mine():
+      res = mine.mine(request.get_json())
+      return jsonify(res)
+      
 @app.route('/blockId', methods=['POST']) # 블록아이디 확인용
 def call_blockId():
       res = blockId.blockId(request.get_json())
