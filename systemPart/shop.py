@@ -3,69 +3,55 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from systemPart import loginSession
 import models
 
 def shop(reqData):
-	if len(reqData['contexts']) > 0:
-		req = reqData['contexts'][0]['params']['user_id']['value']
-		userProfile = models.User.query.filter_by(userid=req).first()
-		res = {
-	    "version": "2.0",
-	    "context": {
-		    "values": [
-		      {
-		        "name": "login_user",
-		        "lifeSpan": 10,
-		        "params": {
-		          "login_user": str(req)
-		        }
-		      }
-		    ]
+		
+	res = {
+	"version": "2.0",
+	"template": {
+	  "outputs": [
+	  {
+		"carousel": {
+		  "type": "basicCard",
+		  "items": [
+			{
+				"title": "장비 상점",
+				"description": "장비 사는데 돈쓰면 고기는 누가 사?",
+			  "thumbnail": {
+				
+				"imageUrl": "http://210.111.183.149:1234/static/equipment_shop.png"
+			  },
+			  "buttons": [
+				{
+				  "action": "block",
+				  "label": "이동",
+				  "blockId": "610bd074b39c74041ad0eef6"
+				},
+			  ]
 			},
-	    "template": {
-	      "outputs": [
-	      {
-	        "carousel": {
-	          "type": "basicCard",
-	          "items": [
-	            {
-					"title": "장비 상점",
-					"description": "장비 사는데 돈쓰면 고기는 누가 사?",
-	              "thumbnail": {
+			{
+			"title": "펫 상점",
+			"description": "Love Animal, Love Nature",
+			  "thumbnail": {
+				"imageUrl": "http://210.111.183.149:1234/static/pet_shop.png"
+			  },
+			  "buttons": [
+				{
+				  "action": "block",
+				  "label": "이동",
+				  "blockId": "611279c8401b7e060181f081"
+				},
+			  ]
+			},
 					
-	                "imageUrl": "http://210.111.183.149:1234/static/equipment_shop.png"
-	              },
-	              "buttons": [
-	                {
-	                  "action": "block",
-	                  "label": "이동",
-	                  "blockId": "610bd074b39c74041ad0eef6"
-	                },
-	              ]
-	            },
-	            {
-	            "description": "준비중..",
-	              "thumbnail": {
-	                "imageUrl": "http://210.111.183.149:1234/static/1319default.png"
-	              },
-	              "buttons": [
-	                {
-	                  "action": "block",
-	                  "label": "이동",
-	                  "blockId": "610bcb6a401b7e060181d207"
-	                },
-	              ]
-	            },
-	                    
-	          ]
-	        }
-	        }
-	        ]   
-	        }
-	        }
-	else:
-		res = myPage.myPage(reqData)
-
+		  ]
+		}
+		}
+		]   
+		}
+		}
 
 	return res
 
@@ -190,22 +176,8 @@ def buyAnEquipment(reqData):
 	return res
 	
 def shop_equipment(reqData):
-	if len(reqData['contexts']) > 0:
-		req = reqData['contexts'][0]['params']['login_user']['value']
-		userProfile = models.User.query.filter_by(userid=req).first()
-		res = {
+	res = {
     "version": "2.0",
-     "context": {
-    "values": [
-      {
-        "name": "login_user",
-        "lifeSpan": 10,
-        "params": {
-          "user_pw": str(userProfile.userid)
-        }
-      }
-    ]
-	},
     "template": {
         "outputs": [
             {
@@ -272,11 +244,78 @@ def shop_equipment(reqData):
         ]
         }
         }
-        
-	
-	else:
-		res = myPage.myPage(reqData)
 		
 	return res
-	
+
+def shop_pet(reqData):
+	res = {
+    "version": "2.0",
+    "template": {
+        "outputs": [
+            {
+            "carousel": {
+          "type": "itemCard",
+          "items": [
+            {       
+                    "title": "다리 밑에서 주워온 알",
+                    "description": "이것은 단순한 알이 아니다",
+                    "profile": {
+                        "title": "알",
+                        "imageUrl": "http://210.111.183.149:1234/static/itemResource/pet_egg.png"
+			 
+                    },
+                    "itemList": [
+                        {
+                            "title": "생김새",
+                            "description": "작고 귀여움"
+			  
+                        },
+			{
+                            "title": "구매비용",
+                            "description":  "100,000 Gold"
+                        },
+                    ],
+                    "buttons": [
+                        {
+                            "label": "알 구입",
+                            "action": "block",
+                            "blockId": "610bcb6a401b7e060181d207"
+                        }
+                    ],
+                },
+                 {       
+                    "title": "준비중..",
+                    "description": "준비중..",
+                    "profile": {
+                        "title": "준비중..",
+                        "imageUrl": "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
+			 
+                    },
+                    "itemList": [
+                        {
+                            "title": "준비중..",
+                            "description": "준비중.."
+			  
+                        },
+			{
+                            "title": "구매비용",
+                            "description":  "0 Gold"
+                        },
+                    ],
+                    "buttons": [
+                        {
+                            "label": "구입",
+                            "action": "block",
+                            "blockId": "610bcb6a401b7e060181d207"
+                        }
+                    ],
+                }
+                ]
+            }
+            }
+        ]
+        }
+        }
+		
+	return res
 	

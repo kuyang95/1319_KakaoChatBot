@@ -7,6 +7,7 @@ import models
 
 def ranking(reqData):
 	now = time.localtime()
+	
 	answer = "🏆 랭킹\n" + str(time.strftime('%y-%m-%d %H:%M', time.localtime(time.time()))) +" 현재"
 	
 

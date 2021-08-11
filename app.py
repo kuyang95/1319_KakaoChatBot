@@ -28,7 +28,6 @@ from systemPart import attendance
 from systemPart import inventory
 from systemPart import shop
 from systemPart import ranking
-from systemPart import sellItem
 
 # 게임
 from gamePart import gamePartInfo
@@ -146,6 +145,11 @@ def call_viewItemDescript():
       res = inventory.viewItemDescript(request.get_json())
       return jsonify(res)
       
+@app.route('/itemLock', methods=['POST']) # 아이템 설명보기
+def call_itemLock():
+      res = inventory.itemLock(request.get_json())
+      return jsonify(res)
+      
 @app.route('/buyAnEquipment', methods=['POST']) # 상점에서 구입 버튼 클릭시
 def call_buyAnEquipment():
       res = shop.buyAnEquipment(request.get_json())
@@ -159,6 +163,11 @@ def call_shop():
 @app.route('/shop_equipment', methods=['POST']) # 장비 상점
 def call_shop_equipment():
       res = shop.shop_equipment(request.get_json())
+      return jsonify(res)
+      
+@app.route('/shop_pet', methods=['POST']) # 장비 상점
+def call_shop_pet():
+      res = shop.shop_pet(request.get_json())
       return jsonify(res)
       
 @app.route('/ranking', methods=['POST']) # 랭킹

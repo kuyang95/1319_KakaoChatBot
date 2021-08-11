@@ -24,6 +24,7 @@ class User(db.Model):
 	loginPoint = db.Column(db.Integer, nullable=True, default=0)
 	gold = db.Column(db.Integer, nullable=True, default=0)
 	inventories = db.relationship("Inventory", backref='user')
+	status = db.relationship("UserStatus", backref='user')
 	
 	def __repr__(self):
 		return '<User %r>' % self.id
@@ -32,6 +33,21 @@ class User(db.Model):
 		self.userid = userid
 		self.password = password
 
+class UserStatus(db.Model):
+	
+	_table_name__ = 'userStatus'
+	
+	id = db.Column(db.Integer,db.ForeignKey('user.id'),primary_key= True)
+	isHatching = db.Column(db.Integer, nullable=True, default = 0)
+	hatchingTimer = db.Column(db.String(100), nullable=True, default = 0)
+	petCount = db.Column(db.Integer, nullable=True, default = 0)
+	
+	def __repr__(self):
+		return '<UserStatus %r>' % self.id
+		
+	def __init__(self, id):
+		self.id = id
+	
 class ItemBook(db.Model):
 	
 	__table_name__ = 'item_book'
@@ -63,6 +79,7 @@ class Inventory(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(50), nullable=False)
 	quantity = db.Column(db.Integer, nullable=False, default=1)
+	lock = db.Column(db.Integer, nullable=True, default=0)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	itemNo = db.Column(db.Integer, db.ForeignKey('item_book.id'))
 	

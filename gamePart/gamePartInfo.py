@@ -23,16 +23,16 @@ def gamePartInfo():
               ],
             },
             {
-            "title": "준비중..",
-			"description": "준비중",
+            "title": "마이펫 🐶",
+			"description": "너무나도 귀여운 마이펫을 키워보아요",
               "thumbnail": {
-                "imageUrl": "http://210.111.183.149:1234/static/1319default.png"
+                "imageUrl": "http://210.111.183.149:1234/static/pet_game.png"
               },
               "buttons": [
                 {
                   "action": "block",
                   "label": "이동",
-                  "blockId": "61076108a5a4854bcb94b9ba"
+                  "blockId": "610bcb6a401b7e060181d207"
                 },
               ]
             },

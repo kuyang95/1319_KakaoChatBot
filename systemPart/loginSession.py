@@ -4,6 +4,8 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import models
 
+
+		
 res = {
 		  "version": "2.0",
 		  "template": {
@@ -46,3 +48,15 @@ def loginSession(reqData):
 	
 	
 	return True
+
+def loginContext(reqData):
+	contexts_data = (
+		    {
+		        "name": "login_user",
+		        "lifeSpan": 10,
+		        "params": {
+		          "login_user": str(reqData['contexts'][0]['params']['user_id']['value'])
+		        }
+		      }
+		    )
+	return contexts_data

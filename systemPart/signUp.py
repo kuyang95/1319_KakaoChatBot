@@ -111,7 +111,10 @@ def signUp_yes(reqData):
     req_pw = reqData['action']['params']['user_pw']
     models.db.session.add(models.User(req_id,req_pw))
     models.db.session.commit()
-    print("\n" + req_id, "님이 회원가입 하셨습니다.\n")
+    userProfile = models.User.query.filter_by(userid = req_id).first()
+    models.db.session.add(models.UserStatus(userProfile.id))
+    models.db.session.commit()
+    print("\n" + req_id, "님이 회원가입 하셨습니다\n")
     res = {
     "version": "2.0",
     "template": {

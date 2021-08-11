@@ -10,7 +10,10 @@ def signIn(reqData):
     userProfile = models.User.query.filter_by(userid=req[0]).first()
     if userProfile is not None:
         if userProfile.password == req[1]:
-            print("\n" + str(req[0]) + "님이 로그인 하셨습니다.\n")
+            if models.UserStatus.query.filter_by(id=userProfile.id).first() is None:
+                models.db.session.add(models.UserStatus(userProfile.id))
+                models.db.session.commit()
+            print("\n" + str(req[0]) + "님이 로그인 하셨습니다\n")
             res = {
             "version": "2.0",
             "context": {

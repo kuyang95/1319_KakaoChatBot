@@ -14,7 +14,7 @@ ran_ment = ['가자.. 가보자 💥', '망치로 땅땅땅빵 🔨', '두구두
 def beefUp_select(reqData):
   if loginSession.loginSession(reqData) is not True:
     return loginSession.res
-		
+  
   req = reqData['contexts'][0]['params']['user_id']['value']
   userProfile = models.User.query.filter_by(userid=req).first()
   user_sword = models.Inventory.query.filter(models.Inventory.user_id==userProfile.id, models.Inventory.name.like('%검%'), models.Inventory.name.like('%강%')).all()
@@ -24,31 +24,30 @@ def beefUp_select(reqData):
     res = {
     "version": "2.0",
     "template": {
-	"outputs": [
-	{
-		"simpleImage": {
-		    "imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
-		}
-		},
-	    {
-		"simpleText": {
-		    "text": "강화 가능한 아이템이 없어요"
-		} 
-	    }
-	],
-	"quickReplies": [
-      {
-	"label": "상점으로 이동 🛒",
-	"action": "block",
-	"blockId": "6109219c25cb590ace33a6cf"
-	
-      }
-	]
+    "outputs": [
+    {
+    "simpleImage": {
+	"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
     }
-}
+    },
+    {
+    "simpleText": {
+	"text": "강화 가능한 아이템이 없어요"
+    } 
+    }
+    ],
+    "quickReplies": [
+    {
+    "label": "상점으로 이동 🛒",
+    "action": "block",
+    "blockId": "6109219c25cb590ace33a6cf"
+    
+    }
+    ]
+    }
+    }
   else: 
     for sword in user_sword: swords.append({"label": sword.name, "action": "block", "blockId": "610a12d9d919c93e877557df" })
-      
       
     res = {
     "version": "2.0",
