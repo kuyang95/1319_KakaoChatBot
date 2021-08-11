@@ -4,6 +4,7 @@ import os
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from systemPart import loginSession
+from systemPart import itemQuery
 import models
 
 def shop(reqData):
@@ -61,118 +62,113 @@ def buyAnEquipment(reqData):
 	userProfile = models.User.query.filter_by(userid=req).first()
 	req = reqData['userRequest']['utterance'].split(" ")[0]
 	
-	# 검 구매시
-	if req == '검':
+	if req == '검': # 검 구매시
 		req = str(req)+" 0강"
-		pickItem = models.ItemBook.query.filter_by(itemName = req).first()
-		user_sword = models.Inventory.query.filter(models.Inventory.user_id==userProfile.id, models.Inventory.name.like('%검%'), models.Inventory.name.like('%강%')).all()
-		sword_count = 0
-		
-		for sword in user_sword:
-			sword_count += sword.quantity
-		
-		if userProfile.gold < pickItem.buyPrice:
-			res = {
+	
+	pickItem = models.ItemBook.query.filter_by(itemName = req).first()
+	if userProfile.gold < pickItem.buyPrice: # 돈 부족
+		res = {
 		"version": "2.0",
 		"context": {
-			    "values": [
-			      {
-			        "name": "login_user",
-			        "lifeSpan": 10,
-			        "params": {
-			          "login_user": str(userProfile.userid)
-			        }
-			      }
-			    ]
-				},
+		"values": [
+		{
+		"name": "login_user",
+		"lifeSpan": 10,
+		"params": {
+		"login_user": str(userProfile.userid)
+		}
+		}
+		]
+		},
 		"template": {
-			"outputs": [
-				{
-	                "simpleImage": {
-	                    "imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
-	                }
-	                },{
-					"simpleText": {
-						"text": "골드가 부족합니다"
-					}
-					}
-			]
+		"outputs": [
+		{
+		"simpleImage": {
+		"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
+		}
+		},{
+		"simpleText": {
+		"text": "골드가 부족합니다"
 		}
 		}
+		]
+		}
+		}
+		return res
+	
+	if pickItem.itemName == '검 0강': # 검은 3개까지 이므로 구매 제한
+		user_sword = models.Inventory.query.filter(models.Inventory.user_id==userProfile.id, models.Inventory.name.like('%검%'), models.Inventory.name.like('%강%')).all()
+		swordCount = 0
 		
-		elif sword_count >=0 and sword_count <3 :
-			userProfile.gold -= pickItem.buyPrice
-			if models.Inventory.query.filter(models.Inventory.user_id==userProfile.id, models.Inventory.name.like('%검 0강%')).count() == 0:
-				models.db.session.add(models.Inventory(pickItem.itemName, userProfile.id, pickItem.id))
-				models.db.session.commit()
+		for sword in user_sword:
+			swordCount += sword.quantity
 			
-			else:
-				user_0sword = models.Inventory.query.filter(models.Inventory.user_id == userProfile.id, models.Inventory.name.like('%검 0강%')).first()
-				user_0sword.quantity += 1
-				models.db.session.commit()
-				
+		if swordCount >= 3:
 			res = {
 			"version": "2.0",
 			"context": {
-				    "values": [
-				      {
-				        "name": "login_user",
-				        "lifeSpan": 10,
-				        "params": {
-				          "login_user": str(userProfile.userid)
-				        }
-				      }
-				    ]
-					},
+			"values": [
+			{
+			"name": "login_user",
+			"lifeSpan": 10,
+			"params": {
+			"login_user": str(userProfile.userid)
+			}
+			}
+			]
+			},
 			"template": {
-				"outputs": [
-					{
-						"simpleText": {
-							"text": "성공적으로 구입했습니다"
-						}
-					}
-				],
-				"quickReplies": [
-				  {
-					"label": "인벤토리 🎒",
-					"action": "block",
-					"blockId": "6109213f3dcccc79addb1958"
-			  }
-			  ]
-			}
-			}
-			
-			
-				
-		else:
-			res = {
-		"version": "2.0",
-		"context": {
-			    "values": [
-			      {
-			        "name": "login_user",
-			        "lifeSpan": 10,
-			        "params": {
-			          "login_user": str(userProfile.userid)
-			        }
-			      }
-			    ]
-				},
-		"template": {
 			"outputs": [
-				{"simpleImage": {
-	                    "imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
-	                }
-	                },
-	                {
-					"simpleText": {
-						"text": "장비는 3개까지 보유 가능합니다"
-					}
-					}
-					]
-		}
-		}
-		
+			{"simpleImage": {
+			"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
+			}
+			},
+			{
+			"simpleText": {
+			"text": "장비는 3개까지 보유 가능합니다"
+			}
+			}
+			]
+			}
+			}
+			return res
+	
+	
+	itemQuery.addA(pickItem.itemName,userProfile.id, 1)
+	userProfile.gold -= pickItem.buyPrice
+	models.db.session.commit()
+	
+	res = {
+	"version": "2.0",
+	"context": {
+	"values": [
+	{
+	"name": "login_user",
+	"lifeSpan": 10,
+	"params": {
+	"login_user": str(userProfile.userid)
+	}
+	}
+	]
+	},
+	"template": {
+	"outputs": [
+	{
+	"simpleText": {
+	"text": "성공적으로 구입했습니다"
+	}
+	}
+	],
+	"quickReplies": [
+	{
+	"label": "인벤토리 🎒",
+	"action": "block",
+	"blockId": "6109213f3dcccc79addb1958"
+	}
+	]
+	}
+	}
+
 	return res
 	
 def shop_equipment(reqData):
@@ -279,7 +275,7 @@ def shop_pet(reqData):
                         {
                             "label": "알 구입",
                             "action": "block",
-                            "blockId": "610bcb6a401b7e060181d207"
+                            "blockId": "610bd39a199a8173c6c47eba"
                         }
                     ],
                 },

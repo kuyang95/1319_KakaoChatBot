@@ -25,7 +25,7 @@ class User(db.Model):
 	gold = db.Column(db.Integer, nullable=True, default=0)
 	inventories = db.relationship("Inventory", backref='user')
 	status = db.relationship("UserStatus", backref='user')
-	
+	grow = db.relationship("Growing", backref='user')
 	def __repr__(self):
 		return '<User %r>' % self.id
 		
@@ -40,13 +40,27 @@ class UserStatus(db.Model):
 	id = db.Column(db.Integer,db.ForeignKey('user.id'),primary_key= True)
 	isHatching = db.Column(db.Integer, nullable=True, default = 0)
 	hatchingTimer = db.Column(db.String(100), nullable=True, default = 0)
-	petCount = db.Column(db.Integer, nullable=True, default = 0)
-	
+
 	def __repr__(self):
 		return '<UserStatus %r>' % self.id
 		
 	def __init__(self, id):
 		self.id = id
+
+class GrowingPet(db.Model):
+	__table_name__ = 'growing_pet'
+	
+	id = db.Column(db.Integer, primary_key = True)
+	name = db.Column(db.String(50), nullable=False)
+	level = db.Column(db.Integer, default = 1)
+	intimacy = db.Column(db.Integer, default = 0)
+	stat_strength = db.Column(db.Integer, nullable=False)
+	stat_intellect = db.Column(db.Integer, nullable=False)
+	stat_shild = db.Column(db.Integer, nullable=False)
+	stat_health = db.Column(db.Integer, nullable=False)
+	personality = db.Column(db.String(20), nullable=False)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	
 	
 class ItemBook(db.Model):
 	
@@ -73,7 +87,21 @@ class ItemBook(db.Model):
 		self.buyPrice = buyPrice
 		self.sellPrice = sellPrice
 		
-		
+class PetBook(db.Model):
+	__table_name__ = 'pet_book'
+	
+	id = db.Column(db.Integer, primary_key = True)
+	name = db.Column(db.String(50), nullable=False)
+	element = db.Column(db.String(20), nullable=False)
+	stat_strength = db.Column(db.Integer, nullable=False)
+	stat_intellect = db.Column(db.Integer, nullable=False)
+	stat_shild = db.Column(db.Integer, nullable=False)
+	stat_health = db.Column(db.Integer, nullable=False)
+	rare = db.Column(db.String(20), nullable=False)
+	food = db.Column(db.String(20), nullable=False)
+	
+
+
 class Inventory(db.Model):
 	__table_name__ = 'inventory'
 	id = db.Column(db.Integer, primary_key=True)

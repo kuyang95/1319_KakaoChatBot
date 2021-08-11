@@ -19,83 +19,91 @@ def inventory(reqData):
 	answer = ""
 	answer += "💰: "+ str("{:,}".format(int(userProfile.gold))) + " Gold\n"
 	answer += "💎: "+ str("{:,}".format(int(userProfile.loginPoint))) + " p\n\n"
-	if len(user_inven) == 0:
+	
+	if not user_inven: # 가방에 아무것도 없을 때
 		res = {
-    "version": "2.0",
-    "context": {
-		    "values": [
-		     login_context
-		    ]
-			},
-    "template": {
-        "outputs": [
-            {
-                "simpleText": {
-                    "text": answer + "(아무것도 없음)"
-                }
-            }
-        ]
-	}
-	}
+		"version": "2.0",
+		"context": {
+		"values": [
+		login_context
+		]
+		},
+		"template": {
+		"outputs": [
+		{
+		"simpleText": {
+		"text": answer + "(아무것도 없음)"
+		}
+		}
+		]
+		}
+		}
 
-	else:
-		answer += "장비 🛡\n——————————————\n"
+	else: # 가방에 아이템 있을 때
 		user_equipment = models.db.session.query(models.Inventory,models.ItemBook).filter(models.ItemBook.id == models.Inventory.itemNo, models.ItemBook.category=='장비', models.Inventory.user_id ==userProfile.id).order_by(models.Inventory.name).all()
-		for inven, itembook in user_equipment:
-			answer += "- " + inven.name + "   " + str(inven.quantity)
-			if inven.lock == 1:
-				answer += " 🔒"
-			answer += "\n"
+		if user_equipment:
+			answer += "장비 🛡\n——————————————\n"
+			
+			for inven, itembook in user_equipment:
+				answer += "- " + inven.name + "   " + str(inven.quantity)
+				if inven.lock == 1:
+					answer += " 🔒"
+				answer += "\n"
 		
-		answer += "\n재료 🪄\n——————————————\n"
 		user_ingredient = models.db.session.query(models.Inventory, models.ItemBook).filter(models.Inventory.itemNo==models.ItemBook.id, models.Inventory.user_id==userProfile.id, models.ItemBook.category=='재료').order_by(models.Inventory.name).all()
+		if user_ingredient:
+			answer += "\n재료 🪄\n——————————————\n"
+			
+			for inven, itembook in user_ingredient:
+				answer += "- " + inven.name + "   " + str(inven.quantity)
+				if inven.lock == 1:
+					answer += " 🔒"
+				answer += "\n"
 		
-		for inven, itembook in user_ingredient:
-			answer += "- " + inven.name + "   " + str(inven.quantity)
-			if inven.lock == 1:
-				answer += " 🔒"
-			answer += "\n"
-		
+		user_odds = models.db.session.query(models.Inventory, models.ItemBook).filter(models.Inventory.itemNo==models.ItemBook.id, models.Inventory.user_id==userProfile.id, models.ItemBook.category=='기타').order_by(models.Inventory.name).all()
+		if user_odds:
+			answer += "\n기타 🧩\n——————————————\n"
+			
+			for inven, itembook in user_odds:
+				answer += "- " + inven.name + "   " + str(inven.quantity)
+				if inven.lock == 1:
+					answer += " 🔒"
+				answer += "\n"
+				
 		res = {
-    "version": "2.0",
-    "context": {
-		    "values": [
-		      {
-		        "name": "login_user",
-		        "lifeSpan": 10,
-		        "params": {
-		          "user_id": str(req)
-		        }
-		      }
-		    ]
-			},
-    "template": {
-        "outputs": [
-            {
-                "simpleText": {
-                    "text": answer
-                }
-            }
-        ],
-	"quickReplies": [
-          {
-        "blockId": "610fc056a5a4854bcb94d908",
-        "action": "block",
-        "label": "설명보기 📝"
-      },
-      {
-        "blockId": "610e4299defb4e3121f2eb62",
-        "action": "block",
-        "label": "팔기 💫"
-      },
-      {
-        "blockId": "61137c29b39c74041ad10ec9",
-        "action": "block",
-        "label": "잠금 🔒"
-      }
-        ]
-	}
-	}
+		"version": "2.0",
+		"context": {
+		"values": [
+		login_context
+		]
+		},
+		"template": {
+		"outputs": [
+		{
+		"simpleText": {
+		"text": answer
+		}
+		}
+		],
+		"quickReplies": [
+		{
+		"blockId": "610fc056a5a4854bcb94d908",
+		"action": "block",
+		"label": "설명보기 📝"
+		},
+		{
+		"blockId": "610e4299defb4e3121f2eb62",
+		"action": "block",
+		"label": "팔기 💫"
+		},
+		{
+		"blockId": "61137c29b39c74041ad10ec9",
+		"action": "block",
+		"label": "잠금 🔒"
+		}
+		]
+		}
+		}
 	
 	return res
 	
@@ -249,7 +257,6 @@ def sellItem(reqData): # 아이템 판매
 		total_gold = 0
 		quantity = 0
 		user_items = models.db.session.query(models.Inventory, models.ItemBook).filter(models.Inventory.user_id==userProfile.id, models.ItemBook.id == models.Inventory.itemNo, models.ItemBook.category== categories, models.Inventory.lock==0).order_by(models.Inventory.name).all()
-		print(user_items)
 		for item, x in user_items:
 			total_gold += item.quantity * x.sellPrice
 			quantity += item.quantity

@@ -58,9 +58,14 @@ def mine(reqData):
 	
 	result = []
 	
-	answer = "채굴완료〰️️\n\n수고비 💰\n——————————————\n500 Gold\n\n발견한 광물 🪨\n——————————————\n"
+	if models.Inventory.query.filter(models.Inventory.user_id == userProfile.id, models.Inventory.name == '장인의 곡괭이').first() is not None:
+		answer = "채굴완료 [장인🔅]\n\n수고비 💰\n——————————————\n500 Gold\n\n발견한 광물 🪨\n——————————————\n"
+		mineCount = 4
+	else:
+		answer = "채굴완료\n\n수고비 💰\n——————————————\n500 Gold\n\n발견한 광물 🪨\n——————————————\n"
+		mineCount = 3
 	
-	for i in range(0,3):
+	for i in range(0,mineCount):
 		number = random.randrange(1,5001)
 		
 		if number <= 2500: pass
@@ -74,7 +79,7 @@ def mine(reqData):
 			else:
 				result.append(random.choice(uncommon_ore) + " 원석")
 		
-		elif number <= 4990:
+		elif number <= 4992:
 			if random.randrange(1,11) == 1:
 				result.append(random.choice(epic_ore))
 			else:
