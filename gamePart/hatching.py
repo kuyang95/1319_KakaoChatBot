@@ -8,7 +8,7 @@ import models
 from systemPart import itemQuery
 from systemPart import loginSession
 
-def hatching(reqData):
+def hatching(reqData): # 부화소 입력 시
 	if loginSession.loginSession(reqData) is not True:
 		return loginSession.res
 	else:
@@ -140,3 +140,9 @@ def hatching(reqData):
 			}
 		
 	return res
+
+def hatchingFinish(reqData):
+	legend_ore = "다이아몬드"
+	epic_ore = ["에메랄드","사파이어","루비"]
+	uncommon_ore = ["자수정","토파즈","흑석"]
+	common_ore = ["구리","철","은", "돌"]

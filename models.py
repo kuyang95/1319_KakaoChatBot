@@ -25,7 +25,8 @@ class User(db.Model):
 	gold = db.Column(db.Integer, nullable=True, default=0)
 	inventories = db.relationship("Inventory", backref='user')
 	status = db.relationship("UserStatus", backref='user')
-	grow = db.relationship("Growing", backref='user')
+	grow = db.relationship("GrowingPet", backref='user')
+	
 	def __repr__(self):
 		return '<User %r>' % self.id
 		
