@@ -84,6 +84,13 @@ def buyAnEquipment(reqData):
 		"text": "골드가 부족합니다"
 		}
 		}
+		],
+		 "quickReplies": [
+		{
+		"label": "활동하러 가기 🏃‍♂️",
+		"action": "block",
+		"blockId": "610caea93dcccc79addb2654"
+		}
 		]
 		}
 		}

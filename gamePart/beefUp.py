@@ -66,7 +66,7 @@ def beefUp_select(reqData):
   return res
     
 def beefUp(reqData): # 강화
-  if get_kakaoKey.getkakaoKey(reqData) is not True:
+  if get_kakaoKey.get_kakaoKey(reqData) is not True:
     return get_kakaoKey.res
   
   userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
@@ -291,13 +291,13 @@ def beefUp_try(reqData):
     },
     {
     "simpleText": {
-    "text": "Gold 가 부족합니다"
+    "text": "골드가 부족합니다"
     }
     }
     ],
     "quickReplies": [
     {
-    "label": "활동 🏃‍♂️",
+    "label": "활동하러 가기 🏃‍♂️",
     "action": "block",
     "blockId": "610caea93dcccc79addb2654"
     }

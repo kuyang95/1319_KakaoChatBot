@@ -53,6 +53,13 @@ def inventory(reqData):
 					answer += " 🔒"
 				answer += "\n"
 		
+		fish_list = ["가오리","고등어","꽃게","복어", "상어","성게","연어","오징어","잉어","참치", "해마"]
+		for fish in fish_list:
+			user_fish = models.Inventory.query.filter(models.Inventory.user_id == userProfile.id, models.Inventory.name == fish).count()
+			if user_fish > 0:
+				answer += "- " + fish + "   " + str(user_fish) + "\n"
+		
+		
 		user_odds = models.db.session.query(models.Inventory, models.ItemBook).filter(models.Inventory.itemNo==models.ItemBook.id, models.Inventory.user_id==userProfile.id, models.ItemBook.category=='기타').order_by(models.Inventory.name).all()
 		if user_odds:
 			answer += "\n기타 🧩\n——————————————\n"
@@ -485,7 +492,7 @@ def sellItem_yes(reqData): # 판매 확정
 			
 	
 	else: # 일괄판매 확정
-		user_items = models.db.session.query(models.Inventory, models.ItemBook).filter(models.Inventory.user_id==userProfile.id, models.ItemBook.id == models.Inventory.itemNo, models.ItemBook.category== pickItem, models.Inventory.lock == 0).order_by(models.Inventory.name).all()
+		user_items = models.db.session.query(models.Inventory, models.ItemBook).filter(models.Inventory.user_id==userProfile.id, models.ItemBook.id == models.Inventory.itemNo, models.ItemBook.category== pickItem, models.Inventory.lock == 0).all()
 		for item, x in user_items:
 			itemQuery.changeAGold(item.name, userProfile.id, item.quantity)
 	
@@ -502,7 +509,7 @@ def sellItem_yes(reqData): # 판매 확정
 	"simpleText": {
 	"text": "성공적으로 판매하였습니다"
 	}
-	}
+	},
 	],
 	"quickReplies": [
 	{
@@ -515,7 +522,6 @@ def sellItem_yes(reqData): # 판매 확정
 	"action": "block",
 	"blockId": "6109213f3dcccc79addb1958"
 	},
-	
 	]
 	}
 	}
@@ -536,15 +542,15 @@ def itemLock(reqData): # 아이템 잠금기능
 	if pickItem is None: # 입력 아이템명이 올바르지 않을때
 		for fish in fish_list: #물고기인지 확인
 			if fish in req:
+				if req[-1] != 'm':
+					req += " cm"
+				if len(req.split(" ")) != 3:
+					req = req[:-2] + " cm"
+				print(req)
 				pickItem = models.Inventory.query.filter(models.Inventory.name==req.split(" ")[0], models.Inventory.user_id == userProfile.id, models.Inventory.value == (req.split(" ")[1] + " " + req.split(" ")[2])).first()
 		if pickItem is None:
 			res = {
 			"version": "2.0",
-			"context": {
-			"values": [
-			login_context
-			]
-			},
 			"template": {
 			"outputs": [
 			{
