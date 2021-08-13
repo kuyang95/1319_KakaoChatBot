@@ -28,11 +28,13 @@ from systemPart import attendance
 from systemPart import inventory
 from systemPart import shop
 from systemPart import ranking
+from systemPart import get_kakaoKey
 
 # 게임
 from gamePart import gamePartInfo
 from gamePart import beefUp
 from gamePart import mine
+from gamePart import fishing
 
 from minzy import minzy
 
@@ -105,6 +107,11 @@ def call_myPage():
       res = myPage.myPage(request.get_json())
       return jsonify(res)
 
+@app.route('/makeNickname', methods=['POST']) # 닉네임 있는 유저인지 확인
+def call_makeNickname():
+      res = get_kakaoKey.makeNickname(request.get_json())
+      return jsonify(res)
+      
 @app.route('/signUp', methods=['POST']) # 회원가입
 def call_signUp():
       res = signUp.signUp(request.get_json())
@@ -130,6 +137,11 @@ def call_inventory():
       res = inventory.inventory(request.get_json())
       return jsonify(res)
 
+@app.route('/fish_inven', methods=['POST']) # 물고기 인벤토리 출력
+def call_fish_inven():
+      res = inventory.fish_inven(request.get_json())
+      return jsonify(res)
+      
 @app.route('/sellItem', methods=['POST']) # 아이템 판매하기
 def call_sellItem():
       res = inventory.sellItem(request.get_json())
@@ -157,17 +169,17 @@ def call_buyAnEquipment():
       
 @app.route('/shop', methods=['POST']) # 상점
 def call_shop():
-      res = shop.shop(request.get_json())
+      res = shop.shop()
       return jsonify(res)
       
 @app.route('/shop_equipment', methods=['POST']) # 장비 상점
 def call_shop_equipment():
-      res = shop.shop_equipment(request.get_json())
+      res = shop.shop_equipment()
       return jsonify(res)
       
 @app.route('/shop_pet', methods=['POST']) # 장비 상점
 def call_shop_pet():
-      res = shop.shop_pet(request.get_json())
+      res = shop.shop_pet()
       return jsonify(res)
       
 @app.route('/ranking', methods=['POST']) # 랭킹
@@ -193,6 +205,11 @@ def call_beefUp_try():
 @app.route('/mine', methods=['POST']) # 채굴
 def call_mine():
       res = mine.mine(request.get_json())
+      return jsonify(res)
+      
+@app.route('/fishing', methods=['POST']) # 낚시
+def call_fishing():
+      res = fishing.fishing(request.get_json())
       return jsonify(res)
       
 @app.route('/blockId', methods=['POST']) # 블록아이디 확인용

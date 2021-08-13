@@ -3,18 +3,16 @@ import os
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
-from systemPart import loginSession
+from systemPart import get_kakaoKey
 from systemPart import itemQuery
 import models
 
 def inventory(reqData):
-	if loginSession.loginSession(reqData) is not True:
-		return loginSession.res
-	else:
-		login_context = loginSession.loginContext(reqData)
+	if get_kakaoKey.get_kakaoKey(reqData) is not True:
+		return get_kakaoKey.res
 		
-	req = reqData['contexts'][0]['params']['user_id']['value']
-	userProfile = models.User.query.filter_by(userid=req).first()
+	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
+	
 	user_inven = models.Inventory.query.filter_by(user_id=userProfile.id).all()
 	answer = ""
 	answer += "💰: "+ str("{:,}".format(int(userProfile.gold))) + " Gold\n"
@@ -23,11 +21,6 @@ def inventory(reqData):
 	if not user_inven: # 가방에 아무것도 없을 때
 		res = {
 		"version": "2.0",
-		"context": {
-		"values": [
-		login_context
-		]
-		},
 		"template": {
 		"outputs": [
 		{
@@ -50,7 +43,7 @@ def inventory(reqData):
 					answer += " 🔒"
 				answer += "\n"
 		
-		user_ingredient = models.db.session.query(models.Inventory, models.ItemBook).filter(models.Inventory.itemNo==models.ItemBook.id, models.Inventory.user_id==userProfile.id, models.ItemBook.category=='재료').order_by(models.Inventory.name).all()
+		user_ingredient = models.db.session.query(models.Inventory, models.ItemBook).filter(models.Inventory.itemNo==models.ItemBook.id, models.Inventory.user_id==userProfile.id, models.ItemBook.category=='재료', models.Inventory.value == None).order_by(models.Inventory.name).all()
 		if user_ingredient:
 			answer += "\n재료 🪄\n——————————————\n"
 			
@@ -72,11 +65,6 @@ def inventory(reqData):
 				
 		res = {
 		"version": "2.0",
-		"context": {
-		"values": [
-		login_context
-		]
-		},
 		"template": {
 		"outputs": [
 		{
@@ -106,50 +94,94 @@ def inventory(reqData):
 		}
 	
 	return res
+
+def fish_inven(reqData): #물고기 인벤토리
+	if get_kakaoKey.get_kakaoKey(reqData) is not True:
+		return get_kakaoKey.res
+	
+	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
+	
+	user_fish = models.db.session.query(models.Inventory, models.ItemBook).filter(models.Inventory.itemNo==models.ItemBook.id, models.Inventory.user_id==userProfile.id, models.ItemBook.category=='재료', models.Inventory.value.like('%cm%')).order_by(models.db.cast(models.Inventory.value, models.db.Float).desc()).all()
+			
+	if not user_fish: # 물고기 없을 때
+		res = {
+		"version": "2.0",
+		"template": {
+		"outputs": [
+		{
+		"simpleText": {
+		"text": answer + "(아무것도 없음)"
+		}
+		}
+		]
+		}
+		}
+
+	else: # 물고기 있을 때
+		answer = "\n내 물고기 🐟\n잠금할때 \"물고기명 치수\"\n——————————————\n"
+		
+		for inven, itembook in user_fish:
+			answer += "- " + inven.name + "   " + inven.value
+			if inven.lock == 1:
+				answer += " 🔒"
+			answer += "\n"
+		
+		res = {
+		"version": "2.0",
+		"template": {
+		"outputs": [
+		{
+		"simpleText": {
+		"text": answer
+		}
+		}
+		],
+		"quickReplies": [
+		{
+		"blockId": "61137c29b39c74041ad10ec9",
+		"action": "block",
+		"label": "잠금 🔒"
+		}
+		]
+		}
+		}
+	return res
 	
 def viewItemDescript(reqData):
-	req = reqData['action']['detailParams']['select_item']['value']
+	if get_kakaoKey.get_kakaoKey(reqData) is not True:
+		return get_kakaoKey.res
+
+	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 	
+	req = reqData['action']['detailParams']['select_item']['value']	
 	pickItem = models.ItemBook.query.filter_by(itemName=req).first()
-	userProfile = models.User.query.filter_by(userid = reqData['contexts'][0]['params']['user_id']['value']).first()
 	
 	if pickItem is None:
 		res = {
-	"version": "2.0",
-	"context": {
-    "values": [
-      {
-        "name": "login_user",
-        "lifeSpan": 10,
-        "params": {
-          "user_id": str(userProfile.userid)
-        }
-	}
-    ]
-	},
-	"template": {
-	"outputs": [
-	{
-	"simpleImage": {
-	                    "imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
-	                }
-	                },
-	    {
-		"simpleText": {
-		    "text": "찾는 아이템이 없습니다"
+		"version": "2.0",
+		"template": {
+		"outputs": [
+		{
+		"simpleImage": {
+		"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
 		}
-	    }
-	],
-	"quickReplies": [
-	  {
-	"blockId": "610fc056a5a4854bcb94d908",
-	"action": "block",
-	"label": "다시입력 ✏️"
-	},
-	
-	]
-	}
-	}
+		},
+		{
+		"simpleText": {
+		"text": "찾는 아이템이 없습니다"
+		}
+		}
+		],
+		"quickReplies": [
+		{
+		"blockId": "610fc056a5a4854bcb94d908",
+		"action": "block",
+		"label": "다시입력 ✏️"
+		},
+		
+		]
+		}
+		}
 	
 	else:
 		has_item = models.Inventory.query.filter(models.Inventory.user_id==userProfile.id, models.Inventory.name==pickItem.itemName).first()
@@ -159,60 +191,49 @@ def viewItemDescript(reqData):
 			item_name = pickItem.itemName + "  🎒"
 			
 		res = {
-	    "version": "2.0",
-	     "context": {
-	    "values": [
-	      {
-		"name": "login_user",
-		"lifeSpan": 10,
-		"params": {
-		  "user_id": str(userProfile.userid)
-		}
-		}
-	    ]
-		},
-	    "template": {
+		"version": "2.0",
+		"template": {
 		"outputs": [
 		{
 		"itemCard":{
-		 "imageTitle": {
-                        "title": "No. " + str(pickItem.id),
-                        "description": "도감번호"
-                    },
-			"title": "설명",
-			    "description": pickItem.descript,
-			    "profile": {
-				"title": item_name,
-				"imageUrl": pickItem.itemImg
-				 
-			    },
-			    "itemList": [
-			    {
-				    "title": "분류",
-				    "description": pickItem.category
-				},
-				{
-				    "title": "스펙",
-				    "description": pickItem.spec
-				},
-				{
-				    "title": "판매가격",
-				    "description": str("{:,}".format(int(pickItem.sellPrice))) + " Gold"
-				},
-			    ],
-			    "buttons": [
-				{
-				    "label": "공유하기 🤘",
-				    "action": "share",
-				},
-				{
-				    "label": "다른 아이템 🔎",
-				    "action": "block",
-				    "blockId": "610fc056a5a4854bcb94d908"
-				},
-			    ],
-			}
-			}
+		"imageTitle": {
+		"title": "No. " + str(pickItem.id),
+		"description": "도감번호"
+		},
+		"title": "설명",
+		"description": pickItem.descript,
+		"profile": {
+		"title": item_name,
+		"imageUrl": pickItem.itemImg
+		
+		},
+		"itemList": [
+		{
+		"title": "분류",
+		"description": pickItem.category
+		},
+		{
+		"title": "스펙",
+		"description": pickItem.spec
+		},
+		{
+		"title": "판매가격",
+		"description": str("{:,}".format(int(pickItem.sellPrice))) + " Gold"
+		},
+		],
+		"buttons": [
+		{
+		"label": "공유하기 🤘",
+		"action": "share",
+		},
+		{
+		"label": "다른 아이템 🔎",
+		"action": "block",
+		"blockId": "610fc056a5a4854bcb94d908"
+		},
+		],
+		}
+		}
 		]
 		}
 		}
@@ -221,7 +242,7 @@ def viewItemDescript(reqData):
 
 def sellItem(reqData): # 아이템 판매
 	req = reqData['action']['detailParams']['sell_info']['value']
-	userProfile = models.User.query.filter_by(userid=reqData['contexts'][0]['params']['user_id']['value']).first()
+	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 	
 	if '일괄판매' in req: #일괄판매 입력시
 		categories = req.split(" ")[0]
@@ -265,13 +286,6 @@ def sellItem(reqData): # 아이템 판매
 		"version": "2.0",
 		"context": {
 		"values": [
-		{
-		"name": "login_user",
-		"lifeSpan": 10,
-		"params": {
-		  "user_id": str(userProfile.userid)
-		}
-		},
 		{
 		"name": "n_sell_info",
 		"lifeSpan": 1,
@@ -338,30 +352,30 @@ def sellItem(reqData): # 아이템 판매
 			quantity = int(quantity)
 		except:
 			res = {
-		"version": "2.0",
-		"template": {
-		"outputs": [
-		{
-				"simpleImage": {
-				    "imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
-				}
-				},
-		    {
-			"simpleText": {
-			    "text": "잘못된 입력정보 입니다"
+			"version": "2.0",
+			"template": {
+			"outputs": [
+			{
+			"simpleImage": {
+			"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
 			}
-		    }
-		],
-		"quickReplies": [
-		  {
-		"blockId": "610e4299defb4e3121f2eb62",
-		"action": "block",
-		"label": "다시입력 ✏️"
-		},
-		
-		]
-		}
-		}
+			},
+			{
+			"simpleText": {
+			"text": "잘못된 입력정보 입니다"
+			}
+			}
+			],
+			"quickReplies": [
+			{
+			"blockId": "610e4299defb4e3121f2eb62",
+			"action": "block",
+			"label": "다시입력 ✏️"
+			},
+			
+			]
+			}
+			}
 		
 		
 			
@@ -374,30 +388,30 @@ def sellItem(reqData): # 아이템 판매
 		
 		if userItem is None or userItem.quantity < quantity:
 			res = {
-		"version": "2.0",
-		"template": {
-		"outputs": [
-		{
-				"simpleImage": {
-				    "imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
-				}
-				},
-		    {
-			"simpleText": {
-			    "text": "잘못된 입력정보 입니다"
+			"version": "2.0",
+			"template": {
+			"outputs": [
+			{
+			"simpleImage": {
+			"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
 			}
-		    }
-		],
-		"quickReplies": [
-		  {
-		"blockId": "610e4299defb4e3121f2eb62",
-		"action": "block",
-		"label": "다시입력 ✏️"
-		},
-		
-		]
-		}
-		}
+			},
+			{
+			"simpleText": {
+			"text": "잘못된 입력정보 입니다"
+			}
+			}
+			],
+			"quickReplies": [
+			{
+			"blockId": "610e4299defb4e3121f2eb62",
+			"action": "block",
+			"label": "다시입력 ✏️"
+			},
+			
+			]
+			}
+			}
 		
 		else:
 			pickItem_info = models.ItemBook.query.filter_by(itemName = pickItem).first()
@@ -405,13 +419,6 @@ def sellItem(reqData): # 아이템 판매
 			"version": "2.0",
 			"context": {
 			"values": [
-			{
-			"name": "login_user",
-			"lifeSpan": 10,
-			"params": {
-			"user_id": userProfile.userid
-			}
-			},
 			{
 			"name": "n_sell_info",
 			"lifeSpan": 1,
@@ -468,11 +475,10 @@ def sellItem(reqData): # 아이템 판매
 		
 
 def sellItem_yes(reqData): # 판매 확정
-	req = reqData['contexts'][0]['params']['user_id']['value']
-	userProfile = models.User.query.filter_by(userid=req).first()
+	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 	
-	pickItem = reqData['contexts'][1]['params']['pickItem']['value']
-	quantity = reqData['contexts'][1]['params']['quantity']['value']
+	pickItem = reqData['contexts'][0]['params']['pickItem']['value']
+	quantity = reqData['contexts'][0]['params']['quantity']['value']
 	
 	if models.ItemBook.query.filter_by(category=pickItem).first() is None: # 일반 판매 확정
 		itemQuery.changeAGold(pickItem, userProfile.id, quantity)
@@ -516,88 +522,91 @@ def sellItem_yes(reqData): # 판매 확정
 
 	return res
 	
-def itemLock(reqData):
-	if loginSession.loginSession(reqData) is not True:
-		return loginSession.res
-	else:
-		login_context = loginSession.loginContext(reqData)
+def itemLock(reqData): # 아이템 잠금기능
+	if get_kakaoKey.get_kakaoKey(reqData) is not True:
+		return get_kakaoKey.res
 		
-	req = reqData['contexts'][0]['params']['user_id']['value']
-	userProfile = models.User.query.filter_by(userid=req).first()
+	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
+  
+	fish_list = ["해마","상어", "연어", "참치","가오리", "복어", "잉어", "고등어","오징어", "꽃게", "성게"]
 	req = reqData['action']['detailParams']['lockItem']['value']
 	
 	pickItem = models.Inventory.query.filter(models.Inventory.name==req, models.Inventory.user_id == userProfile.id).first()
+	
 	if pickItem is None: # 입력 아이템명이 올바르지 않을때
-		res = {
-		"version": "2.0",
-		"context": {
-		"values": [
-		login_context
-		]
-		},
-		"template": {
-		"outputs": [
-		{
-		"simpleImage": {
-		"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
-		}
-		},
-		{
-		"simpleText": {
-		"text": "잘못된 입력정보 입니다"
-		}
-		}
-		],
-		"quickReplies": [
-		{
-		"blockId": "61137c29b39c74041ad10ec9",
-		"action": "block",
-		"label": "다시입력 ✏️"
-		},
-		
-		]
-		}
-		}
-	else: # 정상 입력
-		if pickItem.lock == 1:
-			pickItem.lock = 0
-			answer = pickItem.name + " 해제되었습니다 🔓"
+		for fish in fish_list: #물고기인지 확인
+			if fish in req:
+				pickItem = models.Inventory.query.filter(models.Inventory.name==req.split(" ")[0], models.Inventory.user_id == userProfile.id, models.Inventory.value == (req.split(" ")[1] + " " + req.split(" ")[2])).first()
+		if pickItem is None:
+			res = {
+			"version": "2.0",
+			"context": {
+			"values": [
+			login_context
+			]
+			},
+			"template": {
+			"outputs": [
+			{
+			"simpleImage": {
+			"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
+			}
+			},
+			{
+			"simpleText": {
+			"text": "잘못된 입력정보 입니다"
+			}
+			}
+			],
+			"quickReplies": [
+			{
+			"blockId": "61137c29b39c74041ad10ec9",
+			"action": "block",
+			"label": "다시입력 ✏️"
+			},
 			
-		else:
-			pickItem.lock = 1
-			answer = pickItem.name + " 잠겼습니다 🔒"
+			]
+			}
+			}
 			
-		models.db.session.commit()
+			return res
+			
+	
+	# 정상 입력 혹은 물고기
+	if pickItem.lock == 1:
+		pickItem.lock = 0
+		answer = pickItem.name + " 해제되었습니다 🔓"
 		
-		res = {
-		"version": "2.0",
-		"context": {
-		"values": [
-		login_context
-		]
-		},
-		"template": {
-		"outputs": [
-		{
-		"simpleText": {
-		"text": answer
-		}
-		}
-		],
-		"quickReplies": [
-		{
-		"label": "인벤토리 🎒",
-		"action": "block",
-		"blockId": "6109213f3dcccc79addb1958"
-		},
-		{
-		"blockId": "61137c29b39c74041ad10ec9",
-		"action": "block",
-		"label": "잠금 🔒"
-		}
-		]
-		}
-		}
+	else:
+		pickItem.lock = 1
+		answer = pickItem.name + " 잠겼습니다 🔒"
 		
+	models.db.session.commit()
+	
+	res = {
+	"version": "2.0",
+	"template": {
+	"outputs": [
+	{
+	"simpleText": {
+	"text": answer
+	}
+	}
+	],
+	"quickReplies": [
+	{
+	"label": "인벤토리 🎒",
+	"action": "block",
+	"blockId": "6109213f3dcccc79addb1958"
+	},
+	{
+	"blockId": "61137c29b39c74041ad10ec9",
+	"action": "block",
+	"label": "잠금 🔒"
+	}
+	]
+	}
+	}
+	
 	return res
 		

@@ -9,14 +9,14 @@ def signUp(reqData):
     req = reqData
     input_text = req['action']['detailParams']['user_id']['value']
 
-    if len(input_text) > 8 :
+    if len(input_text) > 5 :
         res = {
     "version": "2.0",
     "template": {
         "outputs": [
             {
                 "simpleText": {
-                    "text": "회원가입 실패 🧐\n(8글자 초과)"
+                    "text": "회원가입 실패 🧐\n(5글자 초과)"
                 } 
             }
         ],

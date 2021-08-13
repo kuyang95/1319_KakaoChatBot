@@ -5,7 +5,7 @@ import random
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import models
 from systemPart import itemQuery
-from systemPart import loginSession
+from systemPart import get_kakaoKey
 
 legend_ore = "다이아몬드"
 epic_ore = ["에메랄드","사파이어","루비"]
@@ -13,46 +13,36 @@ uncommon_ore = ["자수정","토파즈","흑석"]
 common_ore = ["구리","철","은", "돌"]
 hidden_ore = ["장인의 곡괭이"]
 
-def mine(reqData):
-	if loginSession.loginSession(reqData) is not True:
-		return loginSession.res
-	
-	userProfile = models.User.query.filter_by(userid = reqData['contexts'][0]['params']['user_id']['value']).first()
+def mine(reqData):	
+	if get_kakaoKey.get_kakaoKey(reqData) is not True:
+		return get_kakaoKey.res
+		
+	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
+
 	req = ""
 	for i in range(1,5):
 		req += reqData['action']['params']['mine'+str(i)]
 	
 	if req != '으차으차':
 		res = {
-	"version": "2.0",
-	"context": {
-	    "values": [
-	      {
-		"name": "login_user",
-		"lifeSpan": 10,
-		"params": {
-		  "user_id": str(userProfile.userid)
-		}
-		}
-	    ]
-		},
-	"template": {
-	"outputs": [
-	    {
+		"version": "2.0",
+		"template": {
+		"outputs": [
+		{
 		"simpleText": {
-		    "text": "채굴 실패❕"
+		"text": "채굴 실패❕"
 		}
-	    }
-	],
-	"quickReplies": [
-	  {
-	"blockId": "6111481f401b7e060181e789",
-	"action": "block",
-	"label": "채굴 🪨️"
-	},
-	]
-	}
-	}
+		}
+		],
+		"quickReplies": [
+		{
+		"blockId": "6111481f401b7e060181e789",
+		"action": "block",
+		"label": "채굴 🪨️"
+		},
+		]
+		}
+		}
 	
 		return res
 	
@@ -113,37 +103,26 @@ def mine(reqData):
 
 	res = {
 	"version": "2.0",
-	"context": {
-	    "values": [
-	      {
-		"name": "login_user",
-		"lifeSpan": 10,
-		"params": {
-		  "user_id": str(userProfile.userid)
-		}
-		}
-	    ]
-		},
 	"template": {
 	"outputs": [{
-		"simpleText": {
-		    "text": "채굴 진행중..💦  ■■■■  (4/4)"
-		}
-	    },
-	    {
-		"simpleText": {
-		    "text": answer
-		}
-	    }
+	"simpleText": {
+	"text": "채굴 진행중..💦  ■■■■  (4/4)"
+	}
+	},
+	{
+	"simpleText": {
+	"text": answer
+	}
+	}
 	],
 	"quickReplies": [
 	
-	 {
+	{
 	"label": "인벤토리 🎒",
 	"action": "block",
 	"blockId": "6109213f3dcccc79addb1958"
-	  },
-	    {
+	},
+	{
 	"blockId": "6111481f401b7e060181e789",
 	"action": "block",
 	"label": "채굴 🪨️"

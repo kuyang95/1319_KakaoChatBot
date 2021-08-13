@@ -6,7 +6,7 @@ import datetime
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import models
 from systemPart import itemQuery
-from systemPart import loginSession
+from systemPart import get_kakaoKey
 
 def hatching(reqData): # 부화소 입력 시
 	if loginSession.loginSession(reqData) is not True:

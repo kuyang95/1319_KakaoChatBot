@@ -19,7 +19,7 @@ class User(db.Model):
 	__table_name__ = 'user'
 	id = db.Column(db.Integer, primary_key=True)
 	userid = db.Column(db.String(32), unique=True, nullable=False)
-	password = db.Column(db.String(128), nullable=False)
+	kakaoKey = db.Column(db.String(80), unique=True, nullable=True)
 	attendanceDate = db.Column(db.String(30), nullable=True, default="0")
 	loginPoint = db.Column(db.Integer, nullable=True, default=0)
 	gold = db.Column(db.Integer, nullable=True, default=0)
@@ -30,9 +30,9 @@ class User(db.Model):
 	def __repr__(self):
 		return '<User %r>' % self.id
 		
-	def __init__(self, userid, password):
+	def __init__(self, userid, kakaoKey):
 		self.userid = userid
-		self.password = password
+		self.kakaoKey = kakaoKey
 
 class UserStatus(db.Model):
 	
@@ -109,8 +109,10 @@ class Inventory(db.Model):
 	name = db.Column(db.String(50), nullable=False)
 	quantity = db.Column(db.Integer, nullable=False, default=1)
 	lock = db.Column(db.Integer, nullable=True, default=0)
+	value = db.Column(db.String(100), nullable=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	itemNo = db.Column(db.Integer, db.ForeignKey('item_book.id'))
+	
 	
 
 	def __repr__(self):

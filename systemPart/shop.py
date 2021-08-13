@@ -3,63 +3,67 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from systemPart import loginSession
+from systemPart import get_kakaoKey
 from systemPart import itemQuery
 import models
 
-def shop(reqData):
+def shop():
 		
 	res = {
 	"version": "2.0",
 	"template": {
-	  "outputs": [
-	  {
-		"carousel": {
-		  "type": "basicCard",
-		  "items": [
-			{
-				"title": "장비 상점",
-				"description": "장비 사는데 돈쓰면 고기는 누가 사?",
-			  "thumbnail": {
-				
-				"imageUrl": "http://210.111.183.149:1234/static/equipment_shop.png"
-			  },
-			  "buttons": [
-				{
-				  "action": "block",
-				  "label": "이동",
-				  "blockId": "610bd074b39c74041ad0eef6"
-				},
-			  ]
-			},
-			{
-			"title": "펫 상점",
-			"description": "Love Animal, Love Nature",
-			  "thumbnail": {
-				"imageUrl": "http://210.111.183.149:1234/static/pet_shop.png"
-			  },
-			  "buttons": [
-				{
-				  "action": "block",
-				  "label": "이동",
-				  "blockId": "611279c8401b7e060181f081"
-				},
-			  ]
-			},
-					
-		  ]
-		}
-		}
-		]   
-		}
-		}
+	"outputs": [
+	{
+	"carousel": {
+	"type": "basicCard",
+	"items": [
+	{
+	"title": "장비 상점",
+	"description": "장비 사는데 돈쓰면 고기는 누가 사?",
+	"thumbnail": {
+	
+	"imageUrl": "http://210.111.183.149:1234/static/equipment_shop.png"
+	},
+	"buttons": [
+	{
+	"action": "block",
+	"label": "이동",
+	"blockId": "610bd074b39c74041ad0eef6"
+	},
+	]
+	},
+	{
+	"title": "펫 상점",
+	"description": "Love Animal, Love Nature",
+	"thumbnail": {
+	"imageUrl": "http://210.111.183.149:1234/static/pet_shop.png"
+	},
+	"buttons": [
+	{
+	"action": "block",
+	"label": "이동",
+	"blockId": "611279c8401b7e060181f081"
+	},
+	]
+	},
+	
+	]
+	}
+	}
+	]   
+	}
+	}
 
 	return res
 
 
 def buyAnEquipment(reqData):
-	req = reqData['contexts'][0]['params']['user_id']['value']
-	userProfile = models.User.query.filter_by(userid=req).first()
+	if get_kakaoKey.get_kakaoKey(reqData) is not True:
+		return get_kakaoKey.res
+			
+	req = reqData['userRequest']['user']['id']
+	userProfile = models.User.query.filter_by(kakaoKey=req).first()
+	
 	req = reqData['userRequest']['utterance'].split(" ")[0]
 	
 	if req == '검': # 검 구매시
@@ -69,17 +73,6 @@ def buyAnEquipment(reqData):
 	if userProfile.gold < pickItem.buyPrice: # 돈 부족
 		res = {
 		"version": "2.0",
-		"context": {
-		"values": [
-		{
-		"name": "login_user",
-		"lifeSpan": 10,
-		"params": {
-		"login_user": str(userProfile.userid)
-		}
-		}
-		]
-		},
 		"template": {
 		"outputs": [
 		{
@@ -106,17 +99,6 @@ def buyAnEquipment(reqData):
 		if swordCount >= 3:
 			res = {
 			"version": "2.0",
-			"context": {
-			"values": [
-			{
-			"name": "login_user",
-			"lifeSpan": 10,
-			"params": {
-			"login_user": str(userProfile.userid)
-			}
-			}
-			]
-			},
 			"template": {
 			"outputs": [
 			{"simpleImage": {
@@ -140,17 +122,6 @@ def buyAnEquipment(reqData):
 	
 	res = {
 	"version": "2.0",
-	"context": {
-	"values": [
-	{
-	"name": "login_user",
-	"lifeSpan": 10,
-	"params": {
-	"login_user": str(userProfile.userid)
-	}
-	}
-	]
-	},
 	"template": {
 	"outputs": [
 	{
@@ -171,147 +142,147 @@ def buyAnEquipment(reqData):
 
 	return res
 	
-def shop_equipment(reqData):
+def shop_equipment(): # 장비 상점
 	res = {
-    "version": "2.0",
-    "template": {
-        "outputs": [
-            {
-            "carousel": {
-          "type": "itemCard",
-          "items": [
-            {       
-                    "title": "평범해 보이지만..",
-                    "description": "강화를 통해 성장할 수 있는 검이다",
-                    "profile": {
-                        "title": "검",
-                        "imageUrl": "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
-			 
-                    },
-                    "itemList": [
-                        {
-                            "title": "공격력",
-                            "description": "1"
-			  
-                        },
-			{
-                            "title": "구매비용",
-                            "description":  "300 Gold"
-                        },
-                    ],
-                    "buttons": [
-                        {
-                            "label": "검 구입",
-                            "action": "block",
-                            "blockId": "610bd39a199a8173c6c47eba"
-                        }
-                    ],
-                },
-                 {       
-                    "title": "준비중..",
-                    "description": "준비중..",
-                    "profile": {
-                        "title": "준비중..",
-                        "imageUrl": "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
-			 
-                    },
-                    "itemList": [
-                        {
-                            "title": "준비중..",
-                            "description": "준비중.."
-			  
-                        },
-			{
-                            "title": "구매비용",
-                            "description":  "0 Gold"
-                        },
-                    ],
-                    "buttons": [
-                        {
-                            "label": "구입",
-                            "action": "block",
-                            "blockId": "610bcb6a401b7e060181d207"
-                        }
-                    ],
-                }
-                ]
-            }
-            }
-        ]
-        }
-        }
+	"version": "2.0",
+	"template": {
+	"outputs": [
+	{
+	"carousel": {
+	"type": "itemCard",
+	"items": [
+	{       
+	"title": "평범해 보이지만..",
+	"description": "강화를 통해 성장할 수 있는 검이다",
+	"profile": {
+	"title": "검",
+	"imageUrl": "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
+	
+	},
+	"itemList": [
+	{
+	"title": "공격력",
+	"description": "1"
+	
+	},
+	{
+	"title": "구매비용",
+	"description":  "300 Gold"
+	},
+	],
+	"buttons": [
+	{
+	"label": "검 구입",
+	"action": "block",
+	"blockId": "610bd39a199a8173c6c47eba"
+	}
+	],
+	},
+	{       
+	"title": "준비중..",
+	"description": "준비중..",
+	"profile": {
+	"title": "준비중..",
+	"imageUrl": "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
+	
+	},
+	"itemList": [
+	{
+	"title": "준비중..",
+	"description": "준비중.."
+	
+	},
+	{
+	"title": "구매비용",
+	"description":  "0 Gold"
+	},
+	],
+	"buttons": [
+	{
+	"label": "구입",
+	"action": "block",
+	"blockId": "610bcb6a401b7e060181d207"
+	}
+	],
+	}
+	]
+	}
+	}
+	]
+	}
+	}
 		
 	return res
 
-def shop_pet(reqData):
+def shop_pet(): # 펫 상점
 	res = {
-    "version": "2.0",
-    "template": {
-        "outputs": [
-            {
-            "carousel": {
-          "type": "itemCard",
-          "items": [
-            {       
-                    "title": "다리 밑에서 주워온 알",
-                    "description": "이것은 단순한 알이 아니다",
-                    "profile": {
-                        "title": "알",
-                        "imageUrl": "http://210.111.183.149:1234/static/itemResource/pet_egg.png"
-			 
-                    },
-                    "itemList": [
-                        {
-                            "title": "생김새",
-                            "description": "작고 귀여움"
-			  
-                        },
-			{
-                            "title": "구매비용",
-                            "description":  "100,000 Gold"
-                        },
-                    ],
-                    "buttons": [
-                        {
-                            "label": "알 구입",
-                            "action": "block",
-                            "blockId": "610bd39a199a8173c6c47eba"
-                        }
-                    ],
-                },
-                 {       
-                    "title": "준비중..",
-                    "description": "준비중..",
-                    "profile": {
-                        "title": "준비중..",
-                        "imageUrl": "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
-			 
-                    },
-                    "itemList": [
-                        {
-                            "title": "준비중..",
-                            "description": "준비중.."
-			  
-                        },
-			{
-                            "title": "구매비용",
-                            "description":  "0 Gold"
-                        },
-                    ],
-                    "buttons": [
-                        {
-                            "label": "구입",
-                            "action": "block",
-                            "blockId": "610bcb6a401b7e060181d207"
-                        }
-                    ],
-                }
-                ]
-            }
-            }
-        ]
-        }
-        }
+	"version": "2.0",
+	"template": {
+	"outputs": [
+	{
+	"carousel": {
+	"type": "itemCard",
+	"items": [
+	{       
+	"title": "다리 밑에서 주워온 알",
+	"description": "이것은 단순한 알이 아니다",
+	"profile": {
+	"title": "알",
+	"imageUrl": "http://210.111.183.149:1234/static/itemResource/pet_egg.png"
+	
+	},
+	"itemList": [
+	{
+	"title": "생김새",
+	"description": "작고 귀여움"
+	
+	},
+	{
+	"title": "구매비용",
+	"description":  "100,000 Gold"
+	},
+	],
+	"buttons": [
+	{
+	"label": "알 구입",
+	"action": "block",
+	"blockId": "610bd39a199a8173c6c47eba"
+	}
+	],
+	},
+	{       
+	"title": "준비중..",
+	"description": "준비중..",
+	"profile": {
+	"title": "준비중..",
+	"imageUrl": "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
+	
+	},
+	"itemList": [
+	{
+	"title": "준비중..",
+	"description": "준비중.."
+	
+	},
+	{
+	"title": "구매비용",
+	"description":  "0 Gold"
+	},
+	],
+	"buttons": [
+	{
+	"label": "구입",
+	"action": "block",
+	"blockId": "610bcb6a401b7e060181d207"
+	}
+	],
+	}
+	]
+	}
+	}
+	]
+	}
+	}
 		
 	return res
 	
