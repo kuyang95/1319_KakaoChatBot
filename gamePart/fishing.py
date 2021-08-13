@@ -4,6 +4,7 @@ import random
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import models
+import picPath
 from systemPart import itemQuery
 from systemPart import get_kakaoKey
 
@@ -35,7 +36,7 @@ def fishing(reqData):
 		if status ==0:
 			text_message.append({
 			"simpleImage": {
-		"imageUrl": "http://210.111.183.149:1234/static/itemResource/fishing/fish_come.png"
+		"imageUrl": picPath.fish_come
 		}})
 		
 		

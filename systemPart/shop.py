@@ -6,6 +6,7 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from systemPart import get_kakaoKey
 from systemPart import itemQuery
 import models
+import picPath
 
 def shop():
 		
@@ -22,7 +23,7 @@ def shop():
 	"description": "장비 사는데 돈쓰면 고기는 누가 사?",
 	"thumbnail": {
 	
-	"imageUrl": "http://210.111.183.149:1234/static/equipment_shop.png"
+	"imageUrl": picPath.equipment_shop,
 	},
 	"buttons": [
 	{
@@ -36,7 +37,7 @@ def shop():
 	"title": "펫 상점",
 	"description": "Love Animal, Love Nature",
 	"thumbnail": {
-	"imageUrl": "http://210.111.183.149:1234/static/pet_shop.png"
+	"imageUrl": picPath.pet_shop
 	},
 	"buttons": [
 	{
@@ -77,7 +78,7 @@ def buyAnEquipment(reqData):
 		"outputs": [
 		{
 		"simpleImage": {
-		"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
+		"imageUrl": picPath.system_ment,
 		}
 		},{
 		"simpleText": {
@@ -109,7 +110,7 @@ def buyAnEquipment(reqData):
 			"template": {
 			"outputs": [
 			{"simpleImage": {
-			"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
+			"imageUrl": pickPath.system_ment,
 			}
 			},
 			{
@@ -163,7 +164,7 @@ def shop_equipment(): # 장비 상점
 	"description": "강화를 통해 성장할 수 있는 검이다",
 	"profile": {
 	"title": "검",
-	"imageUrl": "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
+	"imageUrl": picPath.sword
 	
 	},
 	"itemList": [
@@ -190,7 +191,7 @@ def shop_equipment(): # 장비 상점
 	"description": "준비중..",
 	"profile": {
 	"title": "준비중..",
-	"imageUrl": "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
+	"imageUrl": picPath.sword
 	
 	},
 	"itemList": [
@@ -235,7 +236,7 @@ def shop_pet(): # 펫 상점
 	"description": "이것은 단순한 알이 아니다",
 	"profile": {
 	"title": "알",
-	"imageUrl": "http://210.111.183.149:1234/static/itemResource/pet_egg.png"
+	"imageUrl": picPath.egg
 	
 	},
 	"itemList": [
@@ -262,7 +263,7 @@ def shop_pet(): # 펫 상점
 	"description": "준비중..",
 	"profile": {
 	"title": "준비중..",
-	"imageUrl": "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
+	"imageUrl": pickPath.sword
 	
 	},
 	"itemList": [

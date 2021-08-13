@@ -4,6 +4,7 @@ import random
 import datetime
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+import picPath
 import models
 from systemPart import itemQuery
 from systemPart import get_kakaoKey
@@ -71,7 +72,7 @@ def hatching(reqData): # 부화소 입력 시
 			"outputs": [
 			{
 			"simpleImage": {
-			"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
+			"imageUrl": picPath.system_ment
 			}
 			},
 			{
@@ -97,7 +98,7 @@ def hatching(reqData): # 부화소 입력 시
 			"outputs": [
 			{
 			"simpleImage": {
-			"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
+			"imageUrl": picPath.system_ment,
 			}
 			},
 			{

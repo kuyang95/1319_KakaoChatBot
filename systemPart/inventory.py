@@ -6,6 +6,7 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from systemPart import get_kakaoKey
 from systemPart import itemQuery
 import models
+import picPath
 
 def inventory(reqData):
 	if get_kakaoKey.get_kakaoKey(reqData) is not True:
@@ -52,7 +53,7 @@ def inventory(reqData):
 				if inven.lock == 1:
 					answer += " 🔒"
 				answer += "\n"
-		
+
 		fish_list = ["가오리","고등어","꽃게","복어", "상어","성게","연어","오징어","잉어","참치", "해마"]
 		for fish in fish_list:
 			user_fish = models.Inventory.query.filter(models.Inventory.user_id == userProfile.id, models.Inventory.name == fish).count()
@@ -170,7 +171,7 @@ def viewItemDescript(reqData):
 		"outputs": [
 		{
 		"simpleImage": {
-		"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
+		"imageUrl": picPath.system_ment,
 		}
 		},
 		{
@@ -261,7 +262,7 @@ def sellItem(reqData): # 아이템 판매
 			"outputs": [
 			{
 			"simpleImage": {
-			"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
+			"imageUrl": picPath.system_ment,
 			}
 			},
 			{
@@ -310,7 +311,7 @@ def sellItem(reqData): # 아이템 판매
 		"description": "위의 정보로 일괄판매를 진행합니다",
 		"profile": {
 		"title": "판매 정보",
-		"imageUrl": "http://210.111.183.149:1234/static/1319default.png"
+		"imageUrl": picPath.default1319
 		},
 		"itemList": [
 		{
@@ -364,7 +365,7 @@ def sellItem(reqData): # 아이템 판매
 			"outputs": [
 			{
 			"simpleImage": {
-			"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
+			"imageUrl": picPath.system_ment,
 			}
 			},
 			{
@@ -400,7 +401,7 @@ def sellItem(reqData): # 아이템 판매
 			"outputs": [
 			{
 			"simpleImage": {
-			"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
+			"imageUrl": picPath.system_ment,
 			}
 			},
 			{
@@ -443,7 +444,7 @@ def sellItem(reqData): # 아이템 판매
 			"description": "위의 정보로 판매를 진행합니다",
 			"profile": {
 			"title": "판매 정보",
-			"imageUrl": "http://210.111.183.149:1234/static/1319default.png"
+			"imageUrl": pickPath.default1319
 			},
 			"itemList": [
 			{
@@ -502,7 +503,7 @@ def sellItem_yes(reqData): # 판매 확정
 	"outputs": [
 	{
 	"simpleImage": {
-	"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
+	"imageUrl": pickPath.system_ment,
 	}
 	},
 	{
@@ -555,7 +556,7 @@ def itemLock(reqData): # 아이템 잠금기능
 			"outputs": [
 			{
 			"simpleImage": {
-			"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
+			"imageUrl": pickPath.system_ment,
 			}
 			},
 			{

@@ -4,6 +4,7 @@ import random
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import models
+import picPath
 from systemPart import itemQuery
 from systemPart import get_kakaoKey
 
@@ -27,7 +28,7 @@ def beefUp_select(reqData):
     "outputs": [
     {
     "simpleImage": {
-	"imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
+	"imageUrl": picPath.system_ment,
     }
     },
     {
@@ -108,13 +109,13 @@ def beefUp(reqData): # 강화
   "title": "",
   "description": "",
   "thumbnail": {
-  "imageUrl": "http://210.111.183.149:1234/static/beef_smithy.png",
+  "imageUrl": picPath.beef_smithy,
   "width": 800,
   "height": 400
   },
   "profile": {
   "title": str(user_sword.name),
-  "imageUrl": "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
+  "imageUrl": picPath.sword
   
   },
   "itemList": [
@@ -201,13 +202,13 @@ def beefUp_try(reqData):
       "description": "\"어머나 더 멋있어졌어!\""
       },
       "thumbnail": {
-      "imageUrl": "http://210.111.183.149:1234/static/beefSuc.png",
+      "imageUrl": picPath.beefSuc,
       "width": 800,
       "height": 400
       },
       "profile": {
       "title": str(sucSword.itemName),
-      "imageUrl": "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
+      "imageUrl": picPath.sword
       
       },
       "itemList": [
@@ -271,7 +272,7 @@ def beefUp_try(reqData):
       "title": "🍎",
       "description": "아쉽지만 그렇게 됐어요",
       "thumbnail": {
-      "imageUrl": "http://210.111.183.149:1234/static/beefbb.png"
+      "imageUrl": picPath.beefFail
       }
       }
       }
@@ -286,7 +287,7 @@ def beefUp_try(reqData):
     "outputs": [
     {
     "simpleImage": {
-    "imageUrl": "http://210.111.183.149:1234/static/system_ment.png",
+    "imageUrl": picPath.system_ment,
     }
     },
     {

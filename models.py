@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy import MetaData
-
+import picPath
 
 naming_convention = {
 "ix": "ix_%(column_0_label)s",
@@ -73,7 +73,7 @@ class ItemBook(db.Model):
 	spec = db.Column(db.String(100), nullable=True)
 	buyPrice = db.Column(db.Integer, nullable=True, default = 0)
 	sellPrice = db.Column(db.Integer, nullable=False)
-	itemImg = db.Column(db.String(200), nullable=True, default="http://210.111.183.149:1234/static/1319default.png")
+	itemImg = db.Column(db.String(200), nullable=True, default=picPath.default1319)
 	
 	children = db.relationship("Inventory", backref="item_book")
 

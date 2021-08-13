@@ -9,6 +9,7 @@ import json
 
 # 모듈화 파일
 
+
 # 데이터 베이스
 from models import db, migrate, User, guestBook
 
@@ -24,7 +25,6 @@ from systemPart import myPage
 from systemPart import signUp
 from systemPart import signIn
 from systemPart import blockId
-from systemPart import attendance
 from systemPart import inventory
 from systemPart import shop
 from systemPart import ranking
@@ -216,24 +216,7 @@ def call_fishing():
 def call_blockId():
       res = blockId.blockId(request.get_json())
       return jsonify(res)
-
-
-@app.route('/word_by_situation',methods=['POST']) # 민지 오늘의 말씀
-def call_rdw():
-      res = minzy.rdw(request.get_json())
-      return res
       
-@app.route('/first_branch',methods=['POST']) # 민지 오늘의 말씀
-def call_first_branch():
-      res = minzy.first_branch()
-      return res
-
-@app.route('/second_branch',methods=['POST']) # 민지 오늘의 말씀
-def call_second_branch():
-      res = minzy.second_branch(request.get_json())
-      return res
-      
-
 
 if __name__ =="__main__":
       app.run(debug=True,host="0.0.0.0", port=1234)
