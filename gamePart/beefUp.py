@@ -18,7 +18,7 @@ def beefUp_select(reqData):
 		
   userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 
-  user_sword = models.Inventory.query.filter(models.Inventory.user_id==userProfile.id, models.Inventory.name.like('%검%'), models.Inventory.name.like('%강%')).all()
+  user_sword = models.Inventory.query.filter(models.Inventory.user_id==userProfile.id, models.Inventory.name.like('%검%'), models.Inventory.name.like('%강%'), models.Inventory.lock == 0).all()
   swords=[]
   
   if not user_sword:
@@ -28,7 +28,7 @@ def beefUp_select(reqData):
     "outputs": [
     {
     "simpleImage": {
-	"imageUrl": picPath.system_ment,
+	"imageUrl": picPath.system_ment
     }
     },
     {

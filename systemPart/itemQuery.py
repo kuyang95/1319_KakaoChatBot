@@ -41,10 +41,10 @@ def changeAB(beforeName, afterName, uid, changeAnum):
 	models.db.session.commit()
 	return True
 	
-def changeAGold(pickItem, uid, quantity):
+def changeAGold(invenId, uid, quantity):
 	quantity = int(quantity)
-	pickItem_info = models.ItemBook.query.filter_by(itemName = pickItem).first()
-	pickItem = models.Inventory.query.filter(models.Inventory.user_id==uid, models.Inventory.name==pickItem).first()
+	pickItem = models.Inventory.query.filter(models.Inventory.user_id==uid, models.Inventory.id==invenId).first()
+	pickItem_info = models.ItemBook.query.filter_by(id = pickItem.itemNo).first()
 	userProfile = models.User.query.filter_by(id = uid).first()
 	
 	if pickItem is None or pickItem_info is None:
@@ -62,7 +62,7 @@ def changeAGold(pickItem, uid, quantity):
 		pickItem.quantity -= quantity
 		
 	
-	models.db.session.commit()
+	
 	
 	return True
 	

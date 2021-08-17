@@ -35,6 +35,7 @@ from gamePart import gamePartInfo
 from gamePart import beefUp
 from gamePart import mine
 from gamePart import fishing
+from gamePart import sneeze
 
 from minzy import minzy
 
@@ -210,6 +211,16 @@ def call_mine():
 @app.route('/fishing', methods=['POST']) # 낚시
 def call_fishing():
       res = fishing.fishing(request.get_json())
+      return jsonify(res)
+      
+@app.route('/sneeze_index', methods=['POST']) # 기침게임 인덱스
+def call_sneeze_index():
+      res = sneeze.sneeze_index(request.get_json())
+      return jsonify(res)
+      
+@app.route('/sneeze_onclick', methods=['POST']) # 기침게임 인덱스
+def call_sneeze_onclick():
+      res = sneeze.sneeze_onclick(request.get_json())
       return jsonify(res)
       
 @app.route('/blockId', methods=['POST']) # 블록아이디 확인용

@@ -263,7 +263,7 @@ def shop_pet(): # 펫 상점
 	"description": "준비중..",
 	"profile": {
 	"title": "준비중..",
-	"imageUrl": pickPath.sword
+	"imageUrl": picPath.sword
 	
 	},
 	"itemList": [

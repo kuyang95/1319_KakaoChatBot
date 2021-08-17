@@ -36,7 +36,6 @@ def get_kakaoKey(reqData):
 	if models.User.query.filter_by(kakaoKey=req).first() is None:
 		return False
 		
-		
 	return True
 
 def makeNickname(reqData):

@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy import MetaData
+from sqlalchemy import or_
 import picPath
 
 naming_convention = {
@@ -122,7 +123,53 @@ class Inventory(db.Model):
 		self.name = name
 		self.user_id = user_id
 		self.itemNo = itemNo
+	
+class MultiRoom(db.Model):
+	
+	__table_name__ = 'multiroom'
+	
+	id = db.Column(db.Integer, primary_key=True)
+	roomName = db.Column(db.String(100), nullable = True, default = "즐거운 게임해요")
+	player1 = db.Column(db.String(100), nullable = True)
+	player2 = db.Column(db.String(100), nullable = True)
+	gameName = db.Column(db.String(50))
+	isGame = db.Column(db.Integer, nullable = False, default=0)
+	
+	sneeze = db.relationship("SneezeGame", backref = "multi_room")
+	
+	def __repr__(self):
+		return '<MultiRoom %r>' % self.id
 		
+	def __init__(self, player1, gameName):
+		self.player1 = player1
+		self.gameName = gameName
+		
+
+class SneezeGame(db.Model):
+	
+	__table_name__ = 'sneezegame'
+	id = db.Column(db.Integer, db.ForeignKey('multi_room.id'), primary_key=True)
+	gameTurn = db.Column(db.Integer, default = 1)
+	player1 = db.Column(db.String(100))
+	player1_hp = db.Column(db.Integer, default = 3)
+	player1_turn = db.Column(db.Integer, default = 0)
+	player1_action = db.Column(db.String(30), nullable = True)
+	player2 = db.Column(db.String(100))
+	player2_hp = db.Column(db.Integer, default = 3)
+	player2_turn = db.Column(db.Integer, default = 0)
+	player2_action = db.Column(db.String(30), nullable = True)
+	
+	def __repr__(self):
+		return '<SneezeGame %r>' % self.id
+	
+	def __init__(self, id, player1, player2):
+		self.id = id
+		self.player1 = player1
+		self.player2 = player2
+		
+		
+	
+	
 
 class guestBook(db.Model):
 	id = db.Column(db.Integer, primary_key=True)

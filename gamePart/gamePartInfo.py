@@ -45,7 +45,14 @@ def gamePartInfo():
   ]
   }
   }
-  ]
+  ],
+  "quickReplies": [
+    {
+    "label": "‍‍미니게임 🎰",
+    "action": "block",
+    "blockId": "611a773aa5a4854bcb95095a"
+    }
+    ]
   }
   }
   return res

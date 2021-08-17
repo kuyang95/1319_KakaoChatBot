@@ -44,10 +44,10 @@ def inventory(reqData):
 					answer += " 🔒"
 				answer += "\n"
 		
-		user_ingredient = models.db.session.query(models.Inventory, models.ItemBook).filter(models.Inventory.itemNo==models.ItemBook.id, models.Inventory.user_id==userProfile.id, models.ItemBook.category=='재료', models.Inventory.value == None).order_by(models.Inventory.name).all()
+		user_ingredient = models.db.session.query(models.Inventory, models.ItemBook).filter(models.Inventory.itemNo==models.ItemBook.id, models.Inventory.user_id==userProfile.id, models.ItemBook.category=='재료').order_by(models.Inventory.name).all()
 		if user_ingredient:
 			answer += "\n재료 🪄\n——————————————\n"
-			
+			user_ingredient = models.db.session.query(models.Inventory, models.ItemBook).filter(models.Inventory.itemNo==models.ItemBook.id, models.Inventory.user_id==userProfile.id, models.ItemBook.category=='재료', models.Inventory.value == None).order_by(models.Inventory.name).all()
 			for inven, itembook in user_ingredient:
 				answer += "- " + inven.name + "   " + str(inven.quantity)
 				if inven.lock == 1:
@@ -249,6 +249,8 @@ def viewItemDescript(reqData):
 	return res
 
 def sellItem(reqData): # 아이템 판매
+	if get_kakaoKey.get_kakaoKey(reqData) is not True:
+		return get_kakaoKey.res
 	req = reqData['action']['detailParams']['sell_info']['value']
 	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 	
@@ -392,7 +394,7 @@ def sellItem(reqData): # 아이템 판매
 			
 		pickItem = pickItem[:-len(str(quantity))]
 			
-		userItem = models.Inventory.query.filter(models.Inventory.user_id==userProfile.id, models.Inventory.name==pickItem).first()
+		userItem = models.Inventory.query.filter(models.Inventory.user_id==userProfile.id, models.Inventory.name==pickItem, models.Inventory.lock == 0).first()
 		
 		if userItem is None or userItem.quantity < quantity:
 			res = {
@@ -422,7 +424,6 @@ def sellItem(reqData): # 아이템 판매
 			}
 		
 		else:
-			pickItem_info = models.ItemBook.query.filter_by(itemName = pickItem).first()
 			res = {
 			"version": "2.0",
 			"context": {
@@ -431,7 +432,7 @@ def sellItem(reqData): # 아이템 판매
 			"name": "n_sell_info",
 			"lifeSpan": 1,
 			"params": {
-			"pickItem": pickItem_info.itemName,
+			"pickItem": userItem.id,
 			"quantity": quantity
 			}
 			},
@@ -444,7 +445,7 @@ def sellItem(reqData): # 아이템 판매
 			"description": "위의 정보로 판매를 진행합니다",
 			"profile": {
 			"title": "판매 정보",
-			"imageUrl": pickPath.default1319
+			"imageUrl": picPath.default1319
 			},
 			"itemList": [
 			{
@@ -490,12 +491,13 @@ def sellItem_yes(reqData): # 판매 확정
 	
 	if models.ItemBook.query.filter_by(category=pickItem).first() is None: # 일반 판매 확정
 		itemQuery.changeAGold(pickItem, userProfile.id, quantity)
-			
+		models.db.session.commit()
 	
 	else: # 일괄판매 확정
 		user_items = models.db.session.query(models.Inventory, models.ItemBook).filter(models.Inventory.user_id==userProfile.id, models.ItemBook.id == models.Inventory.itemNo, models.ItemBook.category== pickItem, models.Inventory.lock == 0).all()
 		for item, x in user_items:
-			itemQuery.changeAGold(item.name, userProfile.id, item.quantity)
+			itemQuery.changeAGold(item.id, userProfile.id, item.quantity)
+		models.db.session.commit()
 	
 	res = {
 	"version": "2.0",
@@ -503,7 +505,7 @@ def sellItem_yes(reqData): # 판매 확정
 	"outputs": [
 	{
 	"simpleImage": {
-	"imageUrl": pickPath.system_ment,
+	"imageUrl": picPath.system_ment,
 	}
 	},
 	{
@@ -556,7 +558,7 @@ def itemLock(reqData): # 아이템 잠금기능
 			"outputs": [
 			{
 			"simpleImage": {
-			"imageUrl": pickPath.system_ment,
+			"imageUrl": picPath.system_ment,
 			}
 			},
 			{

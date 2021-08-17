@@ -10,14 +10,11 @@ from systemPart import itemQuery
 from systemPart import get_kakaoKey
 
 def hatching(reqData): # 부화소 입력 시
-	if loginSession.loginSession(reqData) is not True:
-		return loginSession.res
-	else:
-		login_context = loginSession.loginContext(reqData)
+	if get_kakaoKey.get_kakaoKey(reqData) is not True:
+		return get_kakaoKey.res
 		
-	req = reqData['contexts'][0]['params']['user_id']['value']
-	userProfile = models.User.query.filter_by(userid=req).first()
-	userSt = models.UserStatus.query.filter_by(id=userProfile.id).first()
+	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
+	userSt = models.UserStatus.query.filter_by(models.UserStatus.id=userProfile.id).first()
 	
 	if userSt.hatching == 1: #부화 진행중일때
 		current_time = datetime.datetime.now()
