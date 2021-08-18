@@ -110,7 +110,7 @@ def buyAnEquipment(reqData):
 			"template": {
 			"outputs": [
 			{"simpleImage": {
-			"imageUrl": pickPath.system_ment,
+			"imageUrl": picPath.system_ment,
 			}
 			},
 			{

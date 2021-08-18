@@ -424,6 +424,7 @@ def sellItem(reqData): # 아이템 판매
 			}
 		
 		else:
+			pickItem_info = models.ItemBook.query.filter_by(itemName=userItem.name).first()
 			res = {
 			"version": "2.0",
 			"context": {

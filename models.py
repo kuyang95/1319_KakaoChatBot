@@ -2,6 +2,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy import MetaData
 from sqlalchemy import or_
+
+import datetime
 import picPath
 
 naming_convention = {
@@ -134,6 +136,7 @@ class MultiRoom(db.Model):
 	player2 = db.Column(db.String(100), nullable = True)
 	gameName = db.Column(db.String(50))
 	isGame = db.Column(db.Integer, nullable = False, default=0)
+	createTime = db.Column(db.String(100), default=datetime.datetime.now())
 	
 	sneeze = db.relationship("SneezeGame", backref = "multi_room")
 	
@@ -152,11 +155,13 @@ class SneezeGame(db.Model):
 	gameTurn = db.Column(db.Integer, default = 1)
 	player1 = db.Column(db.String(100))
 	player1_hp = db.Column(db.Integer, default = 3)
-	player1_turn = db.Column(db.Integer, default = 0)
+	player1_turn = db.Column(db.Integer, default = -1)
+	player1_power = db.Column(db.Integer, default = 0)
 	player1_action = db.Column(db.String(30), nullable = True)
 	player2 = db.Column(db.String(100))
 	player2_hp = db.Column(db.Integer, default = 3)
-	player2_turn = db.Column(db.Integer, default = 0)
+	player2_turn = db.Column(db.Integer, default = -1)
+	player2_power = db.Column(db.Integer, default = 0)
 	player2_action = db.Column(db.String(30), nullable = True)
 	
 	def __repr__(self):
