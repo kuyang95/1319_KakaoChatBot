@@ -44,6 +44,9 @@ class UserStatus(db.Model):
 	id = db.Column(db.Integer,db.ForeignKey('user.id'),primary_key= True)
 	isHatching = db.Column(db.Integer, nullable=True, default = 0)
 	hatchingTimer = db.Column(db.String(100), nullable=True, default = 0)
+	hatching_egg = db.Column(db.String(100))
+	hatching_pet = db.Column(db.String(100))
+	pet_personality = db.Column(db.String(20))
 
 	def __repr__(self):
 		return '<UserStatus %r>' % self.id
@@ -102,8 +105,13 @@ class PetBook(db.Model):
 	stat_shild = db.Column(db.Integer, nullable=False)
 	stat_health = db.Column(db.Integer, nullable=False)
 	rare = db.Column(db.String(20), nullable=False)
-	food = db.Column(db.String(20), nullable=False)
+	food = db.Column(db.String(50))
+	img = db.Column(db.String(200), nullable=False)
+	descript = db.Column(db.String(200))
+	p_type = db.Column(db.String(20))
 	
+	def __repr__(self):
+		return '<PetBook %r>' % self.id
 
 
 class Inventory(db.Model):
@@ -158,11 +166,13 @@ class SneezeGame(db.Model):
 	player1_turn = db.Column(db.Integer, default = -1)
 	player1_power = db.Column(db.Integer, default = 0)
 	player1_action = db.Column(db.String(30), nullable = True)
+	player1_time = db.Column(db.String(100), default=datetime.datetime.now())
 	player2 = db.Column(db.String(100))
 	player2_hp = db.Column(db.Integer, default = 3)
 	player2_turn = db.Column(db.Integer, default = -1)
 	player2_power = db.Column(db.Integer, default = 0)
 	player2_action = db.Column(db.String(30), nullable = True)
+	player2_time = db.Column(db.String(100), default=datetime.datetime.now())
 	
 	def __repr__(self):
 		return '<SneezeGame %r>' % self.id

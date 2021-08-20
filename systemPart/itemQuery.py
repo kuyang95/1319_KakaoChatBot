@@ -81,3 +81,20 @@ def addA(pickItem, uid, quantity):
 	
 	models.db.session.commit()
 	return True
+
+def deleteA(pickItem, uid, quantity):
+	quantity = int(quantity)
+	pickItem_info = models.ItemBook.query.filter_by(itemName = pickItem).first()
+	pickItem = models.Inventory.query.filter(models.Inventory.user_id==uid, models.Inventory.name==pickItem).first()
+	userProfile = models.User.query.filter_by(id = uid).first()
+	
+	if pickItem.quantity > quantity:
+		pickItem.quantity -= quantity
+	
+	else:
+		models.db.session.delete(pickItem)
+	
+	
+	models.db.session.commit()
+	return True
+

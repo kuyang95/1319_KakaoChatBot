@@ -382,32 +382,93 @@ def sneeze(reqData):
 	#elif user_utterance == ''
 		
 
-def sneeze_judge(game_info, player):
+def sneeze_judge(reqData, game_info, player):
 	j_start_ment = ["양측 변호인은 진실만을 말할 것을 선서하세요"]
 	p_start_ment = ["선서합니다"]
-	
+	text = ""
+		
 	answers = []
+	answer.append({
+			"simpleImage": {
+			"imageUrl": picPath.trial,
+			}
+			}
+			)
+	answer.append({
+			"simpleText": {
+			"text": text
+			} 
+			})
+			
 	buttons = []
-	if game_info.gameTurn == 1:
-		answer = "재판관 (👨‍⚖️)\n💬:"+ random.choice(j_start_ment) +"\n\n" + game_info.player1 + " ("
+	buttons.append({
+				"blockId": " ",
+				"action": "block",
+				"label": "조사 🔎"
+				})
+	buttons.append({
+				"blockId": " ",
+				"action": "block",
+				"label": "방어 🔰"
+				})
+	buttons.append({
+				"blockId": " ",
+				"action": "block",
+				"label": "의혹제기 🗯 "
+				})		
+	
+	
+	req = reqData['userRequest']['utterance'].split(" ")[0]
+	if req == '재판장': # 게임시작
+		text = "재판관 (👨‍⚖️)\n💬:"+ random.choice(j_start_ment) +"\n\n" + game_info.player1 + " ("
 		for i in range(0,game_info.player1_hp):
-			answer += "⚜️"
-		answer += " "
+			text += "⚜️"
+		text += " "
 		for i in range(0, game_info.player1_power):
-			answer += "🧩"
-		answer += ")\n💬:" + random.choice(p_start_ment)
+			text += "🧩"
+		text += ")\n💬:" + random.choice(p_start_ment)
 		
 		for i in range(0,game_info.player2_hp):
-			answer += "⚜️"
-		answer += " "
+			text += "⚜️"
+		text += " "
 		for i in range(0, game_info.player2_power):
-			answer += "🧩"
-		answer += ")\n💬:" + random.choice(p_start_ment)
+			text += "🧩"
+		text += ")\n💬:" + random.choice(p_start_ment)
+		
+		return answer, buttons
 	
+	elif req == '응답확인':
+		if player == 1:
+			game_info.player1_time = str(datetime.datetime.now())
+		else:
+			game_info.player2_time = str(datetime.datetime.now())
+	
+	
+	else: # 인게임에서 버튼 클릭시
+		current_time = datetime.datetime.now()
+		if player == 1:
+			game_info.player1_action = req
+			game_info.player1_turn += 1
+			player1_time = datetime.datetime.strptime(game_info.player1_time, "%Y-%m-%d %H:%M:%S.%f") # str 을 datetime 형태로 바꿔줌
+			del_time = current_time - player1_time
+			if del_time.seconds > 60:
+				text = "시간초과로 패배하였습니다"
+				return answer, buttons
+			else:
+				game_info.player1_time = str(datetime.datetime.now())
+			
+		else:
+			game_info.player2_action = req
+			game_info.player2_turn += 1
+			game_info.player2_time = str(datetime.datetime.now())
+			player2_time = datetime.datetime.strptime(game_info.player2_time, "%Y-%m-%d %H:%M:%S.%f") # str 을 datetime 형태로 바꿔줌
+			del_time = current_time - player2_time
+			if del_time.seconds > 60:
+				text = "시간초과로 패배하였습니다"
+				return answer, buttons
+			else:
+				game_info.player2_time = str(datetime.datetime.now())
+			
+	
+	#if game_info.player1_turn == game_info.gameTurn and game_info.player2_turn == game_info.gameTurn: # 플레이어 두명 다 선택 완료
 		
-	if player == 1:
-		player = game_info.player1
-	else:
-		player = game_info.player2
-		
-	#if game_info.gameTurn == 1 and game_info.
