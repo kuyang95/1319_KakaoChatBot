@@ -60,7 +60,16 @@ def inventory(reqData):
 			if user_fish > 0:
 				answer += "- " + fish + "   " + str(user_fish) + "\n"
 		
-		
+		user_use = models.db.session.query(models.Inventory, models.ItemBook).filter(models.Inventory.itemNo==models.ItemBook.id, models.Inventory.user_id==userProfile.id, models.ItemBook.category=='사용').order_by(models.Inventory.name).all()
+		if user_use:
+			answer += "\n사용 🎟\n——————————————\n"
+			
+			for inven, itembook in user_use:
+				answer += "- " + inven.name + "   " + str(inven.quantity)
+				if inven.lock == 1:
+					answer += " 🔒"
+				answer += "\n"
+				
 		user_odds = models.db.session.query(models.Inventory, models.ItemBook).filter(models.Inventory.itemNo==models.ItemBook.id, models.Inventory.user_id==userProfile.id, models.ItemBook.category=='기타').order_by(models.Inventory.name).all()
 		if user_odds:
 			answer += "\n기타 🧩\n——————————————\n"
@@ -70,6 +79,9 @@ def inventory(reqData):
 				if inven.lock == 1:
 					answer += " 🔒"
 				answer += "\n"
+				
+		
+				
 				
 		res = {
 		"version": "2.0",

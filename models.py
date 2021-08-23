@@ -60,15 +60,31 @@ class GrowingPet(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(50), nullable=False)
 	level = db.Column(db.Integer, default = 1)
+	experience = db.Column(db.Integer, default = 0)
+	academic = db.Column(db.Integer, default = 0)
 	intimacy = db.Column(db.Integer, default = 0)
-	stat_strength = db.Column(db.Integer, nullable=False)
-	stat_intellect = db.Column(db.Integer, nullable=False)
-	stat_shild = db.Column(db.Integer, nullable=False)
-	stat_health = db.Column(db.Integer, nullable=False)
+	strength = db.Column(db.Integer)
+	intellect = db.Column(db.Integer)
+	shild = db.Column(db.Integer)
+	health = db.Column(db.Integer)
 	personality = db.Column(db.String(20), nullable=False)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	status = db.Column(db.String(30), default = "휴식중..🏖")
+	timer = db.Column(db.String(100), default = 0)
 	
+	def __repr__(self):
+		return '<GrowingPet %r>' % self.id
 	
+	def __init__(self, name, personality, strength, intellect, health, shild, user_id):
+		self.name = name
+		self.personality = personality
+		self.strength = strength
+		self.intellect = intellect
+		self.health = health
+		self.shild = shild
+		self.user_id = user_id
+	
+		
 class ItemBook(db.Model):
 	
 	__table_name__ = 'item_book'
@@ -100,10 +116,10 @@ class PetBook(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(50), nullable=False)
 	element = db.Column(db.String(20), nullable=False)
-	stat_strength = db.Column(db.Integer, nullable=False)
-	stat_intellect = db.Column(db.Integer, nullable=False)
-	stat_shild = db.Column(db.Integer, nullable=False)
-	stat_health = db.Column(db.Integer, nullable=False)
+	strength = db.Column(db.Integer)
+	intellect = db.Column(db.Integer)
+	shild = db.Column(db.Integer)
+	health = db.Column(db.Integer)
 	rare = db.Column(db.String(20), nullable=False)
 	food = db.Column(db.String(50))
 	img = db.Column(db.String(200), nullable=False)

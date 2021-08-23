@@ -19,6 +19,7 @@ def hatching(reqData): # 부화소 입력 시
 	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 	userSt = models.UserStatus.query.filter_by(id=userProfile.id).first()
 	req = reqData['userRequest']['utterance']
+	print(req)
 	if req == '사용하기': # 부화 하려고 시도
 		user_egg = models.db.session.query(models.Inventory, models.ItemBook).filter(models.ItemBook.id == models.Inventory.itemNo, models.ItemBook.id ==42, models.Inventory.user_id == userProfile.id).all()
 		
@@ -49,7 +50,7 @@ def hatching(reqData): # 부화소 입력 시
 			}
 			}
 			return res
-		else: # 보유 알이 있을 때
+		elif user_egg and userSt.isHatching == 0: # 보유 알이 있을 때
 			eggs = []
 			for egg, x in user_egg: eggs.append({"label": egg.name, "action": "block", "blockId": "611e502b199a8173c6c4c993" })
 			
@@ -69,76 +70,152 @@ def hatching(reqData): # 부화소 입력 시
 		
 			return res
 
-	elif req == '확인하기': # 부화끝나고 펫 확인
+	elif req == '받아오기' and userSt.isHatching == 2: # 훈련센터로 이동
+		user_growing = models.GrowingPet.query.filter_by(user_id = userProfile.id).count()
 		pet_info = models.PetBook.query.filter_by(name = userSt.hatching_pet).first()
-		egg_info = models.ItemBook.query.filter_by(name = userSt.hatching_egg).first()
+		egg_info = models.ItemBook.query.filter_by(itemName = userSt.hatching_egg).first()
+		print(user_growing)
+		if user_growing > 4: # 최대 5마리까지 한번에 훈련가능이라 넘으면 안됨
+			res = {
+			"version": "2.0",
+			"template": {
+			"outputs": [
+			 {
+		    "simpleImage": {
+			"imageUrl": picPath.system_ment
+		    }
+		    },
+			{
+			"simpleText": {
+			"text": "훈련센터가 꽉찼어요"
+			}
+			}
+			],
+			"quickReplies": [
+			{
+		    "label": "훈련센터로 이동 🥬",
+		    "action": "block",
+		    "blockId": "61235128401b7e0601822e38"
+		    }
+			]
+			}
+			}
+			return res
+		else:
+			models.db.session.add(models.GrowingPet(pet_info.name, userSt.pet_personality, pet_info.strength, pet_info.intellect, pet_info.health, pet_info.shild, userProfile.id))
+			userSt.isHatching = 0
+			models.db.session.commit()
+			
+			res = {
+			"version": "2.0",
+			"template": {
+			"outputs": [
+			{
+			"simpleText": {
+			"text": "훈련센터로 들어갔어요"
+			}
+			},
+			{
+			"itemCard":{
+			"title": "휴식중..🏖",
+			"profile": {
+			"title": pet_info.name,
+			"imageUrl": pet_info.img
+			
+			},
+			"itemList": [
+			{
+			"title": "레벨",
+			"description": 1
+			},
+			{
+			"title": "성격",
+			"description": userSt.pet_personality
+			},
+			],
+			}
+			},
+			],
+			"quickReplies": [
+			{
+			"blockId": "61235128401b7e0601822e38",
+			"action": "block",
+			"label": "훈련센터로 이동 🥬"
+			}
+			]
+			}
+			}
+			return res
+			
+			
+		
+		
+	elif req == '확인하기'or userSt.isHatching == 2: # 부화끝나고 펫 확인
+		pet_info = models.PetBook.query.filter_by(name = userSt.hatching_pet).first()
+		egg_info = models.ItemBook.query.filter_by(itemName = userSt.hatching_egg).first()
 		res = {
-	    "version": "2.0",
-	    "template": {
-	    "outputs": [
-	    {
-	    "simpleImage": {
-		"imageUrl": pet_info.img
-	    }
-	    },
+		"version": "2.0",
+		"template": {
+		"outputs": [
+		{
+		"basicCard": {
+		"thumbnail": {
+		"imageUrl": pet_info.img,
+		"fixedRatio": True,
+		"width" : 400,
+		"height" : 400
+		},
+		}
+		},
 	    {
 	     "itemCard": {
 		  "imageTitle": {
 		  "title": "축하합니다 🎉",
-		  "description": "알에서 " + pet_info.name + " (이)가 태어났어요",
+		  "description": "알에서 " + userSt.pet_personality + " " + pet_info.name + " (이)가 태어났어요",
 		  },
 		  "title": "설명",
 		  "description": pet_info.descript,
-		  "profile": {
-		  "title": pet_info.name,
-		  "imageUrl": egg_info.itemImg
-		  
-		  },
 		  "itemList": [
 		  {
-		  "title": "이름",
-		  "description": pet_info.name
-		  
-		  },
-		  {
-		  "title": "등급",
-		  "description": pet_info.rare
-		  },
-		  {
 		  "title": "속성",
-		  "description": str(beePersent[beeGrade]) + "%"
+		  "description": pet_info.element
 		  },
 		  {
-		  "title": "강화비용",
-		  "description": str("{:,}".format((beeGrade+1)*1000)) + " Gold" + " (" + str("{:,}".format(userProfile.gold)) + ")"
+		  "title": "타입",
+		  "description": pet_info.p_type
+		  },
+		  {
+		  "title": "힘",
+		  "description": pet_info.strength
+		  },
+		  {
+		  "title": "지능",
+		  "description": pet_info.intellect
+		  },
+		  {
+		  "title": "체력",
+		  "description": pet_info.health
+		  },
+		  {
+		  "title": "방어력",
+		  "description": pet_info.shild
 		  },
 		  ],
 		  "buttons": [
 		  {
-		  "label": "강화",
+		  "label": "받아오기",
 		  "action": "block",
-		  "blockId": "610a91aa401b7e060181cc1e"
-		  },
-		  {
-		  "label": "취소",
-		  "action": "block",
-		  "blockId": "6110e020401b7e060181e484"
-		  },
+		  "blockId": "611e502b199a8173c6c4c993"
+		  }
 		  ],
-		  "buttonLayout" : "horizontal"
 		  }
 		  }
 	    ],
-	    "quickReplies": [
-	    {
-	    "label": "상점으로 이동 🛒",
-	    "action": "block",
-	    "blockId": "6109219c25cb590ace33a6cf"
+	    }
+	    }
+		return res
+	
 	    
-	    }
-	    ]
-	    }
-	    }
 	else: # 부화 인덱스 페이지
 		if '알' in req: # 알 놓았을 때 쿼리문
 			user_egg = models.Inventory.query.filter(models.Inventory.user_id == userProfile.id, models.Inventory.name == req).first()
@@ -172,6 +249,8 @@ def hatching(reqData): # 부화소 입력 시
 			
 			egg_info = models.ItemBook.query.filter_by(itemName = userSt.hatching_egg).first()
 			if time_flows.days *86400  + time_flows.seconds > 14400: # 부화 완료
+				userSt.isHatching = 2
+				models.db.session.commit()
 				res = {
 				"version": "2.0",
 				"template": {
@@ -194,7 +273,7 @@ def hatching(reqData): # 부화소 입력 시
 				],
 				"buttons":[
 				{
-				"blockId": "610bcb6a401b7e060181d207",
+				"blockId": "611e502b199a8173c6c4c993",
 				"action": "block",
 				"label": "확인하기️"
 				}
@@ -265,11 +344,6 @@ def hatching(reqData): # 부화소 입력 시
 			}
 			}
 			return res
-	
-	
-		
-		
-#def hatchingFinish(reqData): # 부화 끝
 	
 		
 	

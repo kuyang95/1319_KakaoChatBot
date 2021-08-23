@@ -42,7 +42,6 @@ def beefUp_select(reqData):
     "label": "상점으로 이동 🛒",
     "action": "block",
     "blockId": "6109219c25cb590ace33a6cf"
-    
     }
     ]
     }

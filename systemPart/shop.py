@@ -59,16 +59,38 @@ def shop():
 
 
 def buyAnEquipment(reqData):
+
 	if get_kakaoKey.get_kakaoKey(reqData) is not True:
 		return get_kakaoKey.res
 			
+	item_list = ['검 0강', '알', '강형욱 특별지도권', '펫장난감']
 	req = reqData['userRequest']['user']['id']
 	userProfile = models.User.query.filter_by(kakaoKey=req).first()
 	
-	req = reqData['userRequest']['utterance'].split(" ")[0]
+	req = item_list[len(reqData['userRequest']['utterance']) -3]
 	
-	if req == '검': # 검 구매시
-		req = str(req)+" 0강"
+	if req == '검 0강':
+		user_sword = models.Inventory.query.filter(models.Inventory.user_id==userProfile.id, models.Inventory.name.like('%검%'), models.Inventory.name.like('%강%')).count()		
+		if user_sword >= 3:
+			res = {
+			"version": "2.0",
+			"template": {
+			"outputs": [
+			{"simpleImage": {
+			"imageUrl": picPath.system_ment,
+			}
+			},
+			{
+			"simpleText": {
+			"text": "장비는 3개까지 보유 가능합니다"
+			}
+			}
+			]
+			}
+			}
+			return res
+
+		
 	
 	pickItem = models.ItemBook.query.filter_by(itemName = req).first()
 	if userProfile.gold < pickItem.buyPrice: # 돈 부족
@@ -96,34 +118,7 @@ def buyAnEquipment(reqData):
 		}
 		}
 		return res
-	
-	if pickItem.itemName == '검 0강': # 검은 3개까지 이므로 구매 제한
-		user_sword = models.Inventory.query.filter(models.Inventory.user_id==userProfile.id, models.Inventory.name.like('%검%'), models.Inventory.name.like('%강%')).all()
-		swordCount = 0
-		
-		for sword in user_sword:
-			swordCount += sword.quantity
-			
-		if swordCount >= 3:
-			res = {
-			"version": "2.0",
-			"template": {
-			"outputs": [
-			{"simpleImage": {
-			"imageUrl": picPath.system_ment,
-			}
-			},
-			{
-			"simpleText": {
-			"text": "장비는 3개까지 보유 가능합니다"
-			}
-			}
-			]
-			}
-			}
-			return res
-	
-	
+
 	itemQuery.addA(pickItem.itemName,userProfile.id, 1)
 	userProfile.gold -= pickItem.buyPrice
 	models.db.session.commit()
@@ -180,7 +175,7 @@ def shop_equipment(): # 장비 상점
 	],
 	"buttons": [
 	{
-	"label": "검 구입",
+	"label": "구입" + " ",
 	"action": "block",
 	"blockId": "610bd39a199a8173c6c47eba"
 	}
@@ -252,39 +247,68 @@ def shop_pet(): # 펫 상점
 	],
 	"buttons": [
 	{
-	"label": "알 구입",
+	"label": "구입" + "   ",
 	"action": "block",
 	"blockId": "610bd39a199a8173c6c47eba"
 	}
 	],
 	},
 	{       
-	"title": "준비중..",
-	"description": "준비중..",
+	"title": "펫 훈련계의 거장에게 받는 트레이닝",
+	"description": "진짜 성격을 찾게될지도..!",
 	"profile": {
-	"title": "준비중..",
-	"imageUrl": picPath.sword
+	"title": "강형욱 특별지도권",
+	"imageUrl": picPath.change_personality
 	
 	},
 	"itemList": [
 	{
-	"title": "준비중..",
-	"description": "준비중.."
+	"title": "효과",
+	"description": "성격 변경"
 	
 	},
 	{
 	"title": "구매비용",
-	"description":  "0 Gold"
+	"description":  "300,000 Gold"
 	},
 	],
 	"buttons": [
 	{
-	"label": "구입",
+	"label": "구입   ",
 	"action": "block",
-	"blockId": "610bcb6a401b7e060181d207"
+	"blockId": "610bd39a199a8173c6c47eba"
 	}
 	],
+	},
+	{       
+	"title": "펫과 친해지세요",
+	"description": "펫 용품은 원래 비싸요",
+	"profile": {
+	"title": "펫장난감",
+	"imageUrl": picPath.pet_toy
+	
+	},
+	"itemList": [
+	{
+	"title": "효과",
+	"description": "친밀도 상승"
+	
+	},
+	{
+	"title": "구매비용",
+	"description":  "300,000 Gold"
+	},
+	],
+	"buttons": [
+	{
+	"label": "구입" + "    ",
+	"action": "block",
+	"blockId": "610bd39a199a8173c6c47eba"
 	}
+	],
+	},
+	
+	
 	]
 	}
 	}

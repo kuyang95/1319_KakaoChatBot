@@ -37,6 +37,7 @@ from gamePart import mine
 from gamePart import fishing
 from gamePart import sneeze
 from gamePart import hatching
+from gamePart import growing
 
 from minzy import minzy
 
@@ -217,6 +218,11 @@ def call_fishing():
 @app.route('/hatching', methods=['POST']) # 부화기
 def call_hatching():
       res = hatching.hatching(request.get_json())
+      return jsonify(res)
+      
+@app.route('/growing', methods=['POST']) # 훈련센터
+def call_grwoing():
+      res = growing.growing(request.get_json())
       return jsonify(res)
 
 @app.route('/sneeze_index', methods=['POST']) # 기침게임 인덱스

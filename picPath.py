@@ -7,6 +7,8 @@ equipment_shop = "http://210.111.183.149:1234/static/equipment_shop.png"
 pet_shop = "http://210.111.183.149:1234/static/pet_shop.png"
 sword = "http://210.111.183.149:1234/static/itemResource/sword_profile.png"
 egg = "http://210.111.183.149:1234/static/itemResource/pet_egg.png"
+pet_toy = "http://210.111.183.149:1234/static/itemResource/pet_toy.png"
+change_personality = "http://210.111.183.149:1234/static/itemResource/personality_change.png"
 
 petGame_thumnail = "http://210.111.183.149:1234/static/pet_game.png"
 
