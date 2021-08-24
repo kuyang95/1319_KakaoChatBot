@@ -19,7 +19,6 @@ def hatching(reqData): # 부화소 입력 시
 	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 	userSt = models.UserStatus.query.filter_by(id=userProfile.id).first()
 	req = reqData['userRequest']['utterance']
-	print(req)
 	if req == '사용하기': # 부화 하려고 시도
 		user_egg = models.db.session.query(models.Inventory, models.ItemBook).filter(models.ItemBook.id == models.Inventory.itemNo, models.ItemBook.id ==42, models.Inventory.user_id == userProfile.id).all()
 		

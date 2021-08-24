@@ -47,6 +47,7 @@ class UserStatus(db.Model):
 	hatching_egg = db.Column(db.String(100))
 	hatching_pet = db.Column(db.String(100))
 	pet_personality = db.Column(db.String(20))
+	growing_select = db.Column(db.Integer)
 
 	def __repr__(self):
 		return '<UserStatus %r>' % self.id
