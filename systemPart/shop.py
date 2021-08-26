@@ -247,7 +247,7 @@ def shop_pet(): # 펫 상점
 	],
 	"buttons": [
 	{
-	"label": "구입" + "   ",
+	"label": "구입" + "  ",
 	"action": "block",
 	"blockId": "610bd39a199a8173c6c47eba"
 	}
@@ -269,7 +269,7 @@ def shop_pet(): # 펫 상점
 	},
 	{
 	"title": "구매비용",
-	"description":  "300,000 Gold"
+	"description":  "200,000 Gold"
 	},
 	],
 	"buttons": [

@@ -2,6 +2,7 @@ import sys
 import os
 import random
 
+
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import models
 import picPath
@@ -14,13 +15,13 @@ def growing(reqData):
 		return get_kakaoKey.res
 	
 	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
-	user_growing = models.GrowingPet.query.filter_by(user_id=userProfile.id).order_by(models.GrowingPet.level).all()
+	user_growing = models.GrowingPet.query.filter_by(user_id=userProfile.id).order_by(models.GrowingPet.level.desc()).all()
 	userSt = models.UserStatus.query.filter_by(id = userProfile.id).first()
 	growing_list = []
 	counter = "  "
 	req = reqData['userRequest']['utterance']
 	
-	if req == '훈련센터로 이동 🥬' or req == '훈련센터' or req == '이동':	 # 훈련센터 인덱스로 이동문구
+	if req == '훈련센터로 이동 🥬' or req == '훈련센터' or req == '이동'  or req.split(" ")[0] == '훈련센터': # 훈련센터 인덱스로 이동문구
 		for pet in user_growing:
 			
 			if pet.status == "수업중..🏫": # 시간 계산해서 쉬는중으로 바꿔줌
@@ -144,7 +145,7 @@ def growing(reqData):
 			
 			if pet.level < 10:
 				buttons.append({
-				"blockId": "610bcb6a401b7e060181d207",
+				"blockId": "61275bd04738391855a634af",
 				"action": "block",
 				"label": "먹이주기 🐟"
 				})
@@ -161,7 +162,7 @@ def growing(reqData):
 				"label": "교육보내기 🏫"
 				})
 			
-		answer = "레벨 — " + str(pet.level) + "(" + str(pet.experience) + "%)\n친밀도 — " + str(pet.intimacy) + "\n소양교육 — "
+		answer = "레벨 — " + str(pet.level) +"\n친밀도 — " + str(pet.intimacy) + "\n소양교육 — "
 		if pet.academic == 0:
 			answer += "이수안함"
 		elif pet.academic == 1:
@@ -264,13 +265,19 @@ def growing(reqData):
 		{
 		"blockId": "61235128401b7e0601822e38",
 		"action": "block",
-		"label": "뒤로 👈️"
+		"label": "아이템사용 🧶️"
 		},
 		{
 		"blockId": "61235128401b7e0601822e38",
 		"action": "block",
-		"label": "아이템사용 🧶️"
-		}
+		"label": "놓아주기 🍃"
+		},
+		{
+		"blockId": "61235128401b7e0601822e38",
+		"action": "block",
+		"label": "뒤로 👈️"
+		},
+		
 		]
 		}
 		}
@@ -393,4 +400,70 @@ def growing(reqData):
 				
 				
 			
-		
+	elif req.split(" ")[0] == '놓아주기' or req == '확인':
+		print("come")
+		pet = models.GrowingPet.query.filter_by(id = userSt.growing_select).first()
+		pet_info = models.PetBook.query.filter_by(name=pet.name).first()
+		if req.split(" ")[0] == '놓아주기':
+			res = {
+			"version": "2.0",
+			"template": {
+			"outputs": [
+			{
+			"itemCard": {
+			"profile": {
+			"title": pet_info.name,
+			"imageUrl": pet_info.img	
+			},
+			"title": "정말로 보내시겠습니까?",
+			"description": "되돌릴 수 없습니다",
+			"itemList": [
+			{
+			"title": "레벨",
+			"description": pet.level
+			},
+			],
+			}
+			}
+			],
+			"quickReplies": [
+			{
+			"blockId": "61235128401b7e0601822e38",
+			"action": "block",
+			"label": "확인"
+			},
+			{
+			"blockId": "61235128401b7e0601822e38",
+			"action": "block",
+			"label": "아니요"
+			},
+			]
+			}
+			}
+			return res
+		else:
+			print(pet.name)
+			res = {
+			"version": "2.0",
+			"template": {
+			"outputs": [
+			{
+			"simpleText": {
+			"text": "\"" + "잘가 " + pet.name + "❕" + "\""
+			}
+			}
+			],
+			"quickReplies": [
+			{
+		    "label": "훈련센터 🥬",
+		    "action": "block",
+		    "blockId": "61235128401b7e0601822e38"
+		    }
+			]
+			}
+			}
+				
+			models.db.session.delete(pet)
+			models.db.session.commit()
+			return res
+	
