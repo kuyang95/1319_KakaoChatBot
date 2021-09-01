@@ -12,7 +12,6 @@ from systemPart import get_kakaoKey
 
 def growing_eat(reqData): # 펫 레벨업
 	
-	print("come")
 	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 	userSt = models.UserStatus.query.filter_by(id = userProfile.id).first()
 	pet = models.GrowingPet.query.filter_by(id= userSt.growing_select).first()

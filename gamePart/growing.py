@@ -1,6 +1,7 @@
 import sys
 import os
 import random
+import datetime
 
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
@@ -11,8 +12,12 @@ from systemPart import get_kakaoKey
 
 
 def growing(reqData):
-	if get_kakaoKey.get_kakaoKey(reqData) is not True:
-		return get_kakaoKey.res
+	systemCheck = get_kakaoKey.get_kakaoKey(reqData)
+	if systemCheck != 0:
+		if systemCheck == 1:
+			return get_kakaoKey.res
+		elif systemCheck == 2:
+			return get_kakaoKey.notice(reqData)
 	
 	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 	user_growing = models.GrowingPet.query.filter_by(user_id=userProfile.id).order_by(models.GrowingPet.level.desc()).all()
@@ -23,14 +28,13 @@ def growing(reqData):
 	
 	if req == '훈련센터로 이동 🥬' or req == '훈련센터' or req == '이동'  or req.split(" ")[0] == '훈련센터': # 훈련센터 인덱스로 이동문구
 		for pet in user_growing:
-			
 			if pet.status == "수업중..🏫": # 시간 계산해서 쉬는중으로 바꿔줌
 				current_time = datetime.datetime.now()
 				old_time = datetime.datetime.strptime(pet.timer, "%Y-%m-%d %H:%M:%S.%f") # str 을 datetime 형태로 바꿔줌
 				time_flows = current_time - old_time
 				
 				if time_flows.days *86400  + time_flows.seconds > 20400: # 학교 끝
-					pet.status == "휴식중..🏖"
+					pet.status = "휴식중..🏖"
 					pet.academic += 1
 					models.db.session.commit()
 					
@@ -104,7 +108,7 @@ def growing(reqData):
 		ren_ment.append(['무서울땐 내 뒤에 숨어.\n내가 앞잘설게', '신뢰는 한결같은 모습에서 나온대. 나는 어때?', '심장이 빨리 뛸 때 살아있는게 느껴져서 좋아', '짜증날땐 맛있는걸 먹자.\n그만한게 없지'])
 		ren_ment.append(['바다에서 낚시를 하면 해마가 잡힌다던데 알아?', '분명 나는 사람이였던 것 같은데..', '바깥세상에는 뭐가 있을까 너무 궁금해', '나는 밥먹을 때 양손을 다 써서 먹어.\n짱이지?'])
 		ren_ment.append(['이것도 좋고, 저것도 좋아.\n다좋아!','나는 못하는게 없지.\n한똑똑 한다구','혼자있으면 나는 몽상가가 돼.\n약간 미래에 대한 거랄까?', '주인이랑 있을때가 제일 좋아!'])
-		
+		ment = []
 		
 		
 		pet = models.GrowingPet.query.filter_by(id = userSt.growing_select).first()
@@ -128,7 +132,7 @@ def growing(reqData):
 			mu = s // 60
 			ss = s - mu*60
 			remaining_time = '\'' +  str(hours) +  '시간 ' + str(mu) +  '분 ' + str(ss) +  '초\'  남음'
-			ment = pet.status + "  " + remaining_time
+			ment.append(pet.status + "  " + remaining_time)
 			
 			
 		else: # 휴식중
@@ -157,7 +161,7 @@ def growing(reqData):
 				})
 			if pet.academic < 2:
 				buttons.append({
-				"blockId": "610bcb6a401b7e060181d207",
+				"blockId": "61235128401b7e0601822e38",
 				"action": "block",
 				"label": "교육보내기 🏫"
 				})
@@ -397,7 +401,32 @@ def growing(reqData):
 				}
 					
 				return res
+			elif len(req) == 4: # 펫장난감 사용함
+				number = randrange(20,36)
+				pet.intimacy += number
+				if pet.intimacy > 100:
+					pet.intimacy = 100
+				models.db.session.commit()
 				
+				res = {
+				"version": "2.0",
+				"template": {
+				"outputs": [
+				 {
+				"simpleText": {
+				"text": pet.name + "의 친밀도가 " + str(number) + " 상승했습니다❗️"
+				} 
+				},
+				],
+				"quickReplies": [
+				{
+				"blockId": "61235128401b7e0601822e38",
+				"action": "block",
+				"label": "상태보기 📝️"
+				},
+				]
+				}
+				}
 				
 			
 	elif req.split(" ")[0] == '놓아주기' or req == '확인':
@@ -433,7 +462,7 @@ def growing(reqData):
 			"label": "확인"
 			},
 			{
-			"blockId": "61235128401b7e0601822e38",
+			"blockId": "6110e020401b7e060181e484",
 			"action": "block",
 			"label": "아니요"
 			},
@@ -442,7 +471,6 @@ def growing(reqData):
 			}
 			return res
 		else:
-			print(pet.name)
 			res = {
 			"version": "2.0",
 			"template": {
@@ -467,3 +495,63 @@ def growing(reqData):
 			models.db.session.commit()
 			return res
 	
+	elif req.split(" ")[0] == '교육보내기' or req == '보내기':
+		pet = models.GrowingPet.query.filter_by(id = userSt.growing_select).first()
+		
+		if req.split(" ")[0] == '교육보내기':
+			res = {
+			"version": "2.0",
+			"template": {
+			"outputs": [
+			{
+			"simpleText": {
+			"text": pet.name + "을(를) 학교에 보내겠습니까❔"
+			}
+			}
+			],
+			"quickReplies": [
+			{
+		    "label": "보내기",
+		    "action": "block",
+		    "blockId": "61235128401b7e0601822e38"
+		    },
+		    {
+		    "label": "아니요",
+		    "action": "block",
+		    "blockId": "6110e020401b7e060181e484"
+		    }
+			]
+			}
+			}
+			
+			return res
+		
+		else: # 학교 보내기 확정
+			pet = models.GrowingPet.query.filter_by(id = userSt.growing_select).first()
+			pet.timer = datetime.datetime.now()
+			pet.status = "수업중..🏫"
+			
+	
+			res = {
+			"version": "2.0",
+			"template": {
+			"outputs": [
+			{
+			"simpleText": {
+			"text": "ฅ(๑˙o˙๑)ฅ \n학교 다녀오겠습니다❕"
+			}
+			}
+			],
+			"quickReplies": [
+			{
+			"blockId": "61235128401b7e0601822e38",
+			"action": "block",
+			"label": "뒤로 👈️"
+			}
+			]
+			}
+			}
+			
+			return res
+	
+				

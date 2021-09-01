@@ -1,6 +1,7 @@
 # 시스템
 system_ment = "http://210.111.183.149:1234/static/system_ment.png"
 default1319 = "http://210.111.183.149:1234/static/1319default.png"
+notice_thumbnail = "http://210.111.183.149:1234/static/notice_thumbnail.png"
 
 # 상점
 equipment_shop = "http://210.111.183.149:1234/static/equipment_shop.png"

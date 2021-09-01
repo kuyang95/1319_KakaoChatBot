@@ -59,9 +59,12 @@ def shop():
 
 
 def buyAnEquipment(reqData):
-
-	if get_kakaoKey.get_kakaoKey(reqData) is not True:
-		return get_kakaoKey.res
+	systemCheck = get_kakaoKey.get_kakaoKey(reqData)
+	if systemCheck != 0:
+		if systemCheck == 1:
+			return get_kakaoKey.res
+		elif systemCheck == 2:
+			return get_kakaoKey.notice(reqData)
 			
 	item_list = ['검 0강', '알', '강형욱 특별지도권', '펫장난감']
 	req = reqData['userRequest']['user']['id']

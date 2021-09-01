@@ -13,8 +13,13 @@ beeUpgradeValues = [1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4]
 ran_ment = ['가자.. 가보자 💥', '망치로 땅땅땅빵 🔨', '두구두구두두구⁉️']
 
 def beefUp_select(reqData):
-  if get_kakaoKey.get_kakaoKey(reqData) is not True:
-    return get_kakaoKey.res
+  systemCheck = get_kakaoKey.get_kakaoKey(reqData)
+  if systemCheck != 0:
+    if systemCheck == 1:
+      return get_kakaoKey.res
+    elif systemCheck == 2:
+      return get_kakaoKey.notice(reqData)
+  
 		
   userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 
@@ -66,8 +71,13 @@ def beefUp_select(reqData):
   return res
     
 def beefUp(reqData): # 강화
-  if get_kakaoKey.get_kakaoKey(reqData) is not True:
-    return get_kakaoKey.res
+  systemCheck = get_kakaoKey.get_kakaoKey(reqData)
+  if systemCheck != 0:
+    if systemCheck == 1:
+      return get_kakaoKey.res
+    elif systemCheck == 2:
+      return get_kakaoKey.notice(reqData)
+
   
   userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
   

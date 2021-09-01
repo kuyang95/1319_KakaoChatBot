@@ -1,9 +1,11 @@
 import sys
 import os
 import time
+import datetime
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import models
+import picPath
 
 res = {
 		"version": "2.0",
@@ -31,13 +33,85 @@ res = {
 		}
 
 def get_kakaoKey(reqData):
-	req = reqData['userRequest']['user']['id']
-
-	if models.User.query.filter_by(kakaoKey=req).first() is None:
-		return False
+	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
+	if userProfile is None:
+		return 1
 		
-	return True
+	elif str(userProfile.attendanceDate) != str(datetime.datetime.now().day):
+		return 2
+     
+		
+	return 0
 
+def notice(reqData):
+	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
+	answer = ""
+	userProfile.attendanceDate = datetime.datetime.now().day
+	userProfile.loginPoint += 10
+	models.db.session.commit()
+	
+	answer += "💎 출석포인트 10점 획득"
+	
+	res = {
+	"version": "2.0",
+	"template": {
+	"outputs": [
+	{
+	"itemCard": {
+	"title": "동물농장 펫 먹이주기, 학교보내기 구현",
+	"imageTitle": {
+	"title": "✨",
+	"description": "환영합니다"
+	},
+	"thumbnail": {
+	"imageUrl": picPath.notice_thumbnail,
+	"width": 800,
+	"height": 800
+	},
+	"profile": {
+	"title": "NOTICE",
+	"imageUrl": picPath.default1319
+	
+	},
+	"itemList": [
+	{
+	"title": "업데이트 날짜",
+	"description": "9월 1일"
+	},
+	],
+	"buttons": [
+	{
+	"label": "패치노트",
+	"action": "block",
+	"blockId": "610bcb6a401b7e060181d207"
+	},
+	{
+	"label": "개발자 근황",
+	"action": "block",
+	"blockId": "610bcb6a401b7e060181d207"
+	},
+	],
+	"buttonLayout" : "horizontal"
+	}
+	},
+	{
+	"simpleText": {
+	"text": answer
+	}
+	},
+	],
+	"quickReplies": [
+		{
+		"messageText": "훈련센터",
+		"action": "message",
+		"label": "업데이트된 훈련센터로 이동  🥬"
+		},
+		]
+	}
+	}
+
+	return res
+	
 def makeNickname(reqData):
 	req = reqData
 	input_text = req['action']['detailParams']['nickname']['value']

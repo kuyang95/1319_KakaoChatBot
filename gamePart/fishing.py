@@ -15,8 +15,12 @@ waiting_ment = ["세월을 낚자 💦", "커피 맛있네 ☕️", "바람이 �
 ren_ment = ["으차.. 으차차 💢", "밀당은 이렇게 호이호이 🪄", "힘이 제법 센걸 💥"]
 
 def fishing(reqData):
-	if get_kakaoKey.get_kakaoKey(reqData) is not True:
-		return get_kakaoKey.res
+	systemCheck = get_kakaoKey.get_kakaoKey(reqData)
+	if systemCheck != 0:
+		if systemCheck == 1:
+			return get_kakaoKey.res
+		elif systemCheck == 2:
+			return get_kakaoKey.notice(reqData)
 		
 	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 	

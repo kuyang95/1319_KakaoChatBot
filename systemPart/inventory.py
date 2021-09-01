@@ -9,8 +9,13 @@ import models
 import picPath
 
 def inventory(reqData):
-	if get_kakaoKey.get_kakaoKey(reqData) is not True:
-		return get_kakaoKey.res
+	systemCheck = get_kakaoKey.get_kakaoKey(reqData)
+	if systemCheck != 0:
+		if systemCheck == 1:
+			return get_kakaoKey.res
+		elif systemCheck == 2:
+			return get_kakaoKey.notice(reqData)
+	
 		
 	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 	
@@ -116,8 +121,12 @@ def inventory(reqData):
 	return res
 
 def fish_inven(reqData): #물고기 인벤토리
-	if get_kakaoKey.get_kakaoKey(reqData) is not True:
-		return get_kakaoKey.res
+	systemCheck = get_kakaoKey.get_kakaoKey(reqData)
+	if systemCheck != 0:
+		if systemCheck == 1:
+			return get_kakaoKey.res
+		elif systemCheck == 2:
+			return get_kakaoKey.notice(reqData)
 	
 	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 	
@@ -168,9 +177,13 @@ def fish_inven(reqData): #물고기 인벤토리
 	return res
 	
 def viewItemDescript(reqData):
-	if get_kakaoKey.get_kakaoKey(reqData) is not True:
-		return get_kakaoKey.res
-
+	systemCheck = get_kakaoKey.get_kakaoKey(reqData)
+	if systemCheck != 0:
+		if systemCheck == 1:
+			return get_kakaoKey.res
+		elif systemCheck == 2:
+			return get_kakaoKey.notice(reqData)
+			
 	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 	
 	req = reqData['action']['detailParams']['select_item']['value']	
@@ -261,8 +274,6 @@ def viewItemDescript(reqData):
 	return res
 
 def sellItem(reqData): # 아이템 판매
-	if get_kakaoKey.get_kakaoKey(reqData) is not True:
-		return get_kakaoKey.res
 	req = reqData['action']['detailParams']['sell_info']['value']
 	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 	
@@ -545,8 +556,6 @@ def sellItem_yes(reqData): # 판매 확정
 	return res
 	
 def itemLock(reqData): # 아이템 잠금기능
-	if get_kakaoKey.get_kakaoKey(reqData) is not True:
-		return get_kakaoKey.res
 		
 	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
   

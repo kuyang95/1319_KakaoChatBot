@@ -8,22 +8,15 @@ from systemPart import get_kakaoKey
 import models
 
 def myPage(reqData):
-	if get_kakaoKey.get_kakaoKey(reqData) is not True:
-		return get_kakaoKey.res
+	systemCheck = get_kakaoKey.get_kakaoKey(reqData)
+	if systemCheck != 0:
+		if systemCheck == 1:
+			return get_kakaoKey.res
+		elif systemCheck == 2:
+			return get_kakaoKey.notice(reqData)
 	
 	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 	output = []
-	
-	if str(userProfile.attendanceDate) != str(datetime.datetime.now().day):
-		userProfile.attendanceDate = datetime.datetime.now().day
-		userProfile.loginPoint += 10
-		models.db.session.commit()
-		
-		output.append({
-		"simpleText": {
-		"text": "(출석포인트를 획득하였습니다 💎)"
-		} 
-		})
 	
 	output.append({
 	"simpleText": {

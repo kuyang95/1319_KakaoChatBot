@@ -12,8 +12,12 @@ from systemPart import get_kakaoKey
 egg_list = {"legend":["냥카르트"], "epic":["나무정령", "벚꽃정령", "콘콘", "돌돌이", "롱롱이"], "uncommon":["머쉬룸", "물댕댕","비틀즈", "베리프", "스타핀", "스타핌", "황금박쥐", "그리림"], "common":["불뱀","나붕이", "부스", "불닭", "블루밍", "찍찍이"]}
 personality_list = ['강인한', '듬직한', '창의적인', '끈기있는', '다재다능한']
 def hatching(reqData): # 부화소 입력 시
-	if get_kakaoKey.get_kakaoKey(reqData) is not True:
-		return get_kakaoKey.res
+	systemCheck = get_kakaoKey.get_kakaoKey(reqData)
+	if systemCheck != 0:
+		if systemCheck == 1:
+			return get_kakaoKey.res
+		elif systemCheck == 2:
+			return get_kakaoKey.notice(reqData)
 	
 	
 	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()

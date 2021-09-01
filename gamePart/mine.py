@@ -13,9 +13,13 @@ uncommon_ore = ["자수정","토파즈","흑석"]
 common_ore = ["구리","철","은", "돌"]
 hidden_ore = ["장인의 곡괭이"]
 
-def mine(reqData):	
-	if get_kakaoKey.get_kakaoKey(reqData) is not True:
-		return get_kakaoKey.res
+def mine(reqData):
+	systemCheck = get_kakaoKey.get_kakaoKey(reqData)
+	if systemCheck != 0:
+		if systemCheck == 1:
+			return get_kakaoKey.res
+		elif systemCheck == 2:
+			return get_kakaoKey.notice(reqData)
 		
 	userProfile = models.User.query.filter_by(kakaoKey=reqData['userRequest']['user']['id']).first()
 
