@@ -22,7 +22,7 @@ def weather(reqData):
 		}
 		}
 		
-		return jsonify(res)
+		return res
 	if 'sys_location' in params.keys(): # 지역을 시 구 동으로 3개까지 입력을 받을 수 있어서 순서대로 location에 저장
 		location = params['sys_location']['value']
 	if 'sys_location1' in params.keys():

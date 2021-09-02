@@ -50,6 +50,7 @@ def notice(reqData):
 	userProfile.loginPoint += 10
 	models.db.session.commit()
 	
+	print("\n" + userProfile.userid + '님 오늘 첫 로그인\n')
 	answer += "💎 출석포인트 10점 획득"
 	
 	res = {
@@ -58,7 +59,7 @@ def notice(reqData):
 	"outputs": [
 	{
 	"itemCard": {
-	"title": "동물농장 펫 먹이주기, 학교보내기 구현",
+	"title": "훈련센터 오픈 🎉",
 	"imageTitle": {
 	"title": "✨",
 	"description": "환영합니다"

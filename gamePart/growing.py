@@ -155,7 +155,7 @@ def growing(reqData):
 				})
 			if pet.intimacy < 100:
 				buttons.append({
-				"blockId": "610bcb6a401b7e060181d207",
+				"blockId": "612f47b67bccb93a7b6f0498",
 				"action": "block",
 				"label": "놀기 🥁"
 				})

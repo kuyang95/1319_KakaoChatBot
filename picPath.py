@@ -24,6 +24,7 @@ fish_come = "http://210.111.183.149:1234/static/itemResource/fishing/fish_come.p
 
 # 동물농장
 hatching_machine = "http://210.111.183.149:1234/static/hatching_machine.png"
+hideandseek = "http://210.111.183.149:1234/static/hideandseek.png"
 
 # 기침재판
 trial = "http://210.111.183.149:1234/static/trial.png"
